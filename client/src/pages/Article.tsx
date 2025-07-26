@@ -1,6 +1,8 @@
+
 import { useParams, Link } from "wouter";
 import { ArrowRight, Calendar, Clock, Share2, Heart } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
@@ -37,6 +39,10 @@ export default function Article() {
   if (isLoading) {
     return (
       <>
+        <Helmet>
+          <title>جاري تحميل المقال... | sehapostmart</title>
+          <meta name="description" content="جاري تحميل المقال من sehapostmart - عيادتك الذكية الرقمية" />
+        </Helmet>
         <Header />
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
@@ -52,6 +58,10 @@ export default function Article() {
   if (error || !article) {
     return (
       <>
+        <Helmet>
+          <title>المقال غير موجود | sehapostmart</title>
+          <meta name="description" content="لم نتمكن من العثور على المقال المطلوب في sehapostmart" />
+        </Helmet>
         <Header />
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
@@ -95,6 +105,11 @@ export default function Article() {
     }
   };
 
+  // Create SEO-friendly meta description
+  const metaDescription = article.excerpt && article.excerpt.length > 0 
+    ? article.excerpt.substring(0, 160).replace(/\s+/g, ' ').trim() + '...'
+    : `اقرأ المزيد عن ${article.title} في sehapostmart - عيادتك الذكية الرقمية`;
+
   // Mock full content - in a real app, this would come from the database
   const fullContent = `
     <p class="text-lg leading-relaxed mb-6">${article.excerpt}</p>
@@ -119,6 +134,35 @@ export default function Article() {
 
   return (
     <>
+      <Helmet>
+        <title>{article.title} | sehapostmart - عيادتك الذكية الرقمية</title>
+        <meta name="description" content={metaDescription} />
+        <meta name="keywords" content={`${article.category}, صحة, طبيعي, sehapostmart, ${article.title}`} />
+        <meta name="author" content="sehapostmart" />
+        
+        {/* Open Graph tags for social sharing */}
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:image" content={article.imageUrl} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://sehapostmart.com/blog/${article.id}`} />
+        <meta property="og:site_name" content="sehapostmart" />
+        
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={article.imageUrl} />
+        
+        {/* Article specific meta tags */}
+        <meta property="article:published_time" content={article.createdAt instanceof Date ? article.createdAt.toISOString() : article.createdAt || new Date().toISOString()} />
+        <meta property="article:section" content={article.category} />
+        <meta property="article:tag" content={article.category} />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href={`https://sehapostmart.com/blog/${article.id}`} />
+      </Helmet>
+      
       <Header />
       
       <div className="min-h-screen bg-gray-50">
@@ -213,6 +257,30 @@ export default function Article() {
                   >
                     تواصل عبر الواتساب
                   </a>
+                </div>
+              </div>
+
+              {/* SEO Call-to-Action */}
+              <div className="mt-8 p-6 bg-green-50 rounded-xl border border-green-200">
+                <h4 className="text-xl font-bold text-green-800 mb-3">
+                  هل وجدت هذا المقال مفيداً؟
+                </h4>
+                <p className="text-green-700 mb-4">
+                  يمكنك الحصول على المنتجات المذكورة بخصم خاص باستخدام كود العضوية <strong>819026838</strong> عند الشراء من أي فرع لـ DXN.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link 
+                    href="/membership"
+                    className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors font-semibold text-center"
+                  >
+                    سجل عضويتك المجانية الآن
+                  </Link>
+                  <Link 
+                    href="/products"
+                    className="border-2 border-green-600 text-green-700 px-6 py-2 rounded-lg hover:bg-green-600 hover:text-white transition-colors font-semibold text-center"
+                  >
+                    تصفح المنتجات
+                  </Link>
                 </div>
               </div>
             </div>
