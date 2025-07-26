@@ -44,7 +44,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       <div className="p-6">
         <div className="flex items-center text-sm text-secondary-500 mb-3">
           <Calendar className="w-4 h-4 ml-2" />
-          <span>{formatDate(article.createdAt ? article.createdAt.toISOString() : new Date().toISOString())}</span>
+          <span>{formatDate(article.createdAt instanceof Date ? article.createdAt.toISOString() : article.createdAt || new Date().toISOString())}</span>
           <span className="mx-2">•</span>
           <Clock className="w-4 h-4 ml-1" />
           <span>{article.readTime}</span>

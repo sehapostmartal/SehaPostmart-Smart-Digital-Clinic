@@ -150,7 +150,7 @@ export default function Article() {
                 <div className="flex items-center justify-center space-x-reverse space-x-6 text-secondary-500 mb-8">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-5 h-5" />
-                    <span>{formatDate(article.createdAt ? article.createdAt.toISOString() : new Date().toISOString())}</span>
+                    <span>{formatDate(article.createdAt instanceof Date ? article.createdAt.toISOString() : article.createdAt || new Date().toISOString())}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-5 h-5" />
