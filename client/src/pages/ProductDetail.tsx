@@ -1,5 +1,5 @@
 import { useParams, Link } from "wouter";
-import { ArrowRight, Heart, Share2 } from "lucide-react";
+import { ArrowRight, Heart, Share2, Users, MapPin, Gift } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -105,6 +105,73 @@ export default function ProductDetail() {
                   </p>
                   <div className="text-3xl font-bold text-primary-600 mb-6">
                     ${product.price}
+                  </div>
+                </div>
+
+                {/* Membership Discount Section */}
+                <div className="bg-gradient-to-br from-primary-50 to-primary-100 border-2 border-primary-200 rounded-2xl p-6 mb-6">
+                  <div className="text-center mb-6">
+                    <div className="flex items-center justify-center gap-2 mb-3">
+                      <Gift className="w-6 h-6 text-primary-600" />
+                      <h3 className="text-2xl font-bold text-primary-800">وفر أكثر واحصل على خصم الأعضاء!</h3>
+                      <Gift className="w-6 h-6 text-primary-600" />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Option 1: Direct Purchase */}
+                    <div className="bg-white rounded-xl p-6 border border-primary-200 shadow-sm">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">1</div>
+                        <h4 className="text-lg font-bold text-secondary-800">الشراء المباشر (بدون تسجيل)</h4>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-secondary-700">
+                          <MapPin className="w-4 h-4 text-blue-500" />
+                          <span className="text-sm">اذهب إلى أقرب فرع DXN</span>
+                        </div>
+                        
+                        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
+                          <p className="text-sm text-secondary-700 mb-2">اعطهم رقم العضوية العالمي:</p>
+                          <div className="text-center">
+                            <span className="text-3xl font-bold text-blue-600 bg-white px-4 py-2 rounded-lg border-2 border-blue-300">819026838</span>
+                          </div>
+                          <p className="text-xs text-center text-secondary-600 mt-2">هذا الرقم يمنحك خصم فوري</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Option 2: Join Our Team */}
+                    <div className="bg-white rounded-xl p-6 border-2 border-primary-300 shadow-sm relative overflow-hidden">
+                      <div className="absolute top-0 right-0 bg-primary-500 text-white px-3 py-1 text-xs font-bold rounded-bl-lg">
+                        الأفضل
+                      </div>
+                      
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 bg-primary-500 text-white rounded-full flex items-center justify-center font-bold">2</div>
+                        <h4 className="text-lg font-bold text-secondary-800">انضم لفريقنا (مُوصى به)</h4>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-secondary-700">
+                          <Users className="w-4 h-4 text-primary-500" />
+                          <span className="text-sm">احصل على رقم عضوية خاص بك</span>
+                        </div>
+                        
+                        <ul className="text-sm text-secondary-600 space-y-1 pr-4">
+                          <li>• خصومات دائمة على جميع المنتجات</li>
+                          <li>• دعم شخصي مني مباشرة</li>
+                          <li>• رقم عضوية خاص بك</li>
+                        </ul>
+                        
+                        <Link href="/membership">
+                          <Button className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold">
+                            سجل عضويتك المجانية الآن
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
