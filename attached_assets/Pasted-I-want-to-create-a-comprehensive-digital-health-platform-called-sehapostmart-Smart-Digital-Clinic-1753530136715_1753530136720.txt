@@ -1,0 +1,213 @@
+I want to create a comprehensive digital health platform called "sehapostmart - Smart Digital Clinic" using React for the frontend and Supabase as the database.
+
+Core Requirements:
+
+1. Required Technologies:
+
+•
+Frontend: React.js with Tailwind CSS for styling
+
+•
+Database: Supabase (I'll provide connection details later)
+
+•
+Icons: React Icons
+
+•
+Routing: React Router DOM
+
+•
+HTTP Client: Axios
+
+2. Required Project Structure:
+
+Plain Text
+
+
+src/
+├── components/
+│   ├── Header.js
+│   ├── Footer.js
+│   ├── ProductCard.js
+│   └── ArticleCard.js
+├── pages/
+│   ├── Home.js
+│   ├── Products.js
+│   ├── ProductDetail.js
+│   ├── Blog.js
+│   ├── Article.js
+│   ├── AIConsultation.js
+│   └── Membership.js
+├── services/
+│   └── supabase.js
+└── styles/
+
+
+3. Design & Color Scheme:
+
+•
+Primary Palette: Natural green (#2E7D32, #4CAF50)
+
+•
+Secondary Colors: White (#FFFFFF), Gray (#9E9E9E, #424242)
+
+•
+Typography: Tajawal for Arabic, Inter for English
+
+•
+Design Style: Clean, professional, responsive
+
+4. Required Pages:
+
+A. Homepage:
+
+•
+Hero Section with title "العيادة الرقمية الذكية" (Smart Digital Clinic)
+
+•
+Four main services section: Natural Products, Knowledge Content, AI Consultations, Membership Opportunity
+
+•
+Featured products showcase (4-6 products)
+
+•
+Latest health articles (3 articles)
+
+•
+Call-to-action section for membership
+
+B. Products Page:
+
+•
+Search bar and category filtering
+
+•
+Responsive product grid layout
+
+•
+Categories: Supplements, Healthy Beverages, Personal Care
+
+C. Product Detail Page:
+
+•
+Product image gallery
+
+•
+Detailed information (description, benefits, usage instructions, ingredients)
+
+•
+"Order via WhatsApp" button that opens WhatsApp link with pre-written message
+
+•
+Related products section
+
+D. Blog Page:
+
+•
+Articles display with categories
+
+•
+Search functionality
+
+•
+Featured article at the top
+
+E. AI Consultation Page:
+
+•
+Form to describe health issues
+
+•
+Interface to display recommendations (UI only initially)
+
+F. Membership Page:
+
+•
+Membership benefits explanation
+
+•
+Price comparison
+
+•
+Registration form
+
+5. Required Sample Data:
+
+Sample Products:
+
+•
+Reishi Mushroom - Supplements
+
+•
+Lion's Mane - Supplements
+
+•
+Spirulina - Supplements
+
+•
+Lingzhi Coffee - Healthy Beverages
+
+•
+Natural Skin Care Cream - Personal Care
+
+•
+Natural Shampoo - Personal Care
+
+Sample Articles:
+
+•
+"Benefits of Reishi Mushroom for Immunity"
+
+•
+"How to Improve Focus Naturally"
+
+•
+"The Importance of Antioxidants in Diet"
+
+6. Contact Information (to include in design):
+
+•
+WhatsApp: +963951902860
+
+•
+Email: sehapostmartall@gmail.com
+
+•
+Membership ID: 819026838
+
+7. Technical Requirements:
+
+•
+Responsive design (Mobile-first)
+
+•
+SEO-friendly structure
+
+•
+Fast loading performance
+
+•
+Environment variables for sensitive data
+
+Expectations:
+
+1.
+Create a clean and organized React project
+
+2.
+Implement the specified design accurately
+
+3.
+Build reusable components
+
+4.
+Follow React best practices
+
+5.
+Set up routing between pages
+
+6.
+Prepare structure for Supabase integration later
+
+Start by creating the basic project and homepage first, then we'll continue with other pages progressively.
+
