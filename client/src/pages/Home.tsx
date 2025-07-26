@@ -1,15 +1,38 @@
 import { Link } from "wouter";
 import { ArrowLeft, Leaf, BriefcaseMedical, Bot, Crown, Percent, UserCheck, Star } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import ArticleCard from "@/components/ArticleCard";
-import { sampleProducts, sampleArticles } from "@/data/sampleData";
+import type { Product, Article } from "@shared/schema";
 
 export default function Home() {
-  const featuredProducts = sampleProducts.slice(0, 6);
-  const latestArticles = sampleArticles.slice(0, 3);
+  const { data: products } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
+    queryFn: async () => {
+      const response = await fetch('/api/products');
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      return response.json();
+    }
+  });
+
+  const { data: articles } = useQuery<Article[]>({
+    queryKey: ['/api/articles'],
+    queryFn: async () => {
+      const response = await fetch('/api/articles');
+      if (!response.ok) {
+        throw new Error('Failed to fetch articles');
+      }
+      return response.json();
+    }
+  });
+
+  const featuredProducts = (products || []).slice(0, 6);
+  const latestArticles = (articles || []).slice(0, 3);
 
   const scrollToServices = () => {
     const servicesSection = document.getElementById('services-section');

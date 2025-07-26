@@ -1,15 +1,27 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { sampleArticles } from "@/data/sampleData";
+import type { Article } from "@shared/schema";
 
 export default function Blog() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const { data: articles, isLoading, error } = useQuery<Article[]>({
+    queryKey: ['/api/articles'],
+    queryFn: async () => {
+      const response = await fetch('/api/articles');
+      if (!response.ok) {
+        throw new Error('Failed to fetch articles');
+      }
+      return response.json();
+    }
+  });
 
   const categories = [
     { value: "all", label: "جميع الفئات" },
@@ -18,16 +30,47 @@ export default function Blog() {
     { value: "التغذية", label: "التغذية" },
   ];
 
-  const featuredArticle = sampleArticles.find(article => article.featured === "true") || sampleArticles[0];
+  const featuredArticle = (articles || []).find(article => article.featured === "true") || (articles || [])[0];
   
-  const filteredArticles = sampleArticles
-    .filter(article => article.id !== featuredArticle.id)
+  const filteredArticles = (articles || [])
+    .filter(article => article.id !== featuredArticle?.id)
     .filter(article => {
       const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            article.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === "all" || article.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-secondary-600">جاري تحميل المقالات...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-6xl mb-4">⚠️</div>
+            <h2 className="text-2xl font-bold text-secondary-800 mb-2">خطأ في تحميل المقالات</h2>
+            <p className="text-secondary-600 mb-6">حدث خطأ أثناء تحميل المقالات. يرجى المحاولة مرة أخرى.</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>

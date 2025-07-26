@@ -22,9 +22,10 @@ Preferred communication style: Simple, everyday language.
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js server
 - **Language**: TypeScript with ES modules
-- **Database**: PostgreSQL with Neon serverless database
+- **Database**: PostgreSQL with Neon serverless database (fully integrated)
 - **ORM**: Drizzle ORM for type-safe database operations
 - **Session Storage**: PostgreSQL-based session storage using connect-pg-simple
+- **API**: RESTful API with full CRUD operations for products, articles, consultations, and memberships
 
 ### Project Structure
 ```

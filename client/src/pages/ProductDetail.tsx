@@ -1,21 +1,56 @@
 import { useParams, Link } from "wouter";
 import { ArrowRight, Heart, Share2, Users, MapPin, Gift } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { sampleProducts } from "@/data/sampleData";
+import type { Product } from "@shared/schema";
 
 export default function ProductDetail() {
   const params = useParams();
   const productId = params.id;
   
-  const product = sampleProducts.find(p => p.id === productId);
-  
-  if (!product) {
+  const { data: product, isLoading, error } = useQuery<Product>({
+    queryKey: ['/api/products', productId],
+    queryFn: async () => {
+      const response = await fetch(`/api/products/${productId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch product');
+      }
+      return response.json();
+    }
+  });
+
+  const { data: allProducts } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
+    queryFn: async () => {
+      const response = await fetch('/api/products');
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      return response.json();
+    }
+  });
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-secondary-600">جاري تحميل المنتج...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error || !product) {
     return (
       <>
         <Header />
@@ -35,7 +70,7 @@ export default function ProductDetail() {
     );
   }
 
-  const relatedProducts = sampleProducts
+  const relatedProducts = (allProducts || [])
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 

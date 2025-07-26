@@ -1,15 +1,27 @@
 import { useState } from "react";
 import { Search, Filter } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { sampleProducts } from "@/data/sampleData";
+import type { Product } from "@shared/schema";
 
 export default function Products() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const { data: products, isLoading, error } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
+    queryFn: async () => {
+      const response = await fetch('/api/products');
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      return response.json();
+    }
+  });
 
   const categories = [
     { value: "all", label: "جميع الفئات" },
@@ -18,12 +30,43 @@ export default function Products() {
     { value: "العناية الشخصية", label: "العناية الشخصية" },
   ];
 
-  const filteredProducts = sampleProducts.filter(product => {
+  const filteredProducts = (products || []).filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-secondary-600">جاري تحميل المنتجات...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-6xl mb-4">⚠️</div>
+            <h2 className="text-2xl font-bold text-secondary-800 mb-2">خطأ في تحميل المنتجات</h2>
+            <p className="text-secondary-600 mb-6">حدث خطأ أثناء تحميل المنتجات. يرجى المحاولة مرة أخرى.</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>

@@ -1,19 +1,55 @@
 import { useParams, Link } from "wouter";
 import { ArrowRight, Calendar, Clock, Share2, Heart } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { sampleArticles } from "@/data/sampleData";
+import type { Article } from "@shared/schema";
 
 export default function Article() {
   const params = useParams();
   const articleId = params.id;
   
-  const article = sampleArticles.find(a => a.id === articleId);
+  const { data: article, isLoading, error } = useQuery<Article>({
+    queryKey: ['/api/articles', articleId],
+    queryFn: async () => {
+      const response = await fetch(`/api/articles/${articleId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch article');
+      }
+      return response.json();
+    }
+  });
+
+  const { data: allArticles } = useQuery<Article[]>({
+    queryKey: ['/api/articles'],
+    queryFn: async () => {
+      const response = await fetch('/api/articles');
+      if (!response.ok) {
+        throw new Error('Failed to fetch articles');
+      }
+      return response.json();
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-secondary-600">جاري تحميل المقال...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
   
-  if (!article) {
+  if (error || !article) {
     return (
       <>
         <Header />
@@ -33,7 +69,7 @@ export default function Article() {
     );
   }
 
-  const relatedArticles = sampleArticles
+  const relatedArticles = (allArticles || [])
     .filter(a => a.category === article.category && a.id !== article.id)
     .slice(0, 3);
 

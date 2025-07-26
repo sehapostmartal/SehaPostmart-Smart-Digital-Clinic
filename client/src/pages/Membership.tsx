@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Crown, Check, Star, Percent, UserCheck, Gift } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import type { InsertMembership } from "@shared/schema";
 
 export default function Membership() {
   const { toast } = useToast();
@@ -24,19 +26,50 @@ export default function Membership() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate API call
-    setTimeout(() => {
+  const membershipMutation = useMutation({
+    mutationFn: async (membershipData: InsertMembership) => {
+      const response = await fetch('/api/memberships', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(membershipData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to submit membership');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
       setIsSubmitting(false);
       toast({
         title: "تم تسجيل طلب العضوية بنجاح",
         description: "سنتواصل معك قريباً لإتمام عملية التسجيل",
       });
       setFormData({ name: "", email: "", phone: "", membershipType: "gold" });
-    }, 2000);
+    },
+    onError: () => {
+      setIsSubmitting(false);
+      toast({
+        title: "خطأ في تسجيل العضوية",
+        description: "حدث خطأ أثناء تسجيل العضوية. يرجى المحاولة مرة أخرى.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    const membershipData: InsertMembership = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      membershipType: formData.membershipType as "silver" | "gold" | "platinum",
+    };
+
+    membershipMutation.mutate(membershipData);
   };
 
   const membershipPlans = [
