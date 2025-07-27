@@ -54,6 +54,7 @@ export const storage = {
         ...row,
         id: row.id.toString(),
         price: row.price?.toString() || '0',
+        imageUrl: row.image_url,
         createdAt: row.created_at
       };
     } finally {
@@ -66,7 +67,7 @@ export const storage = {
     try {
       await client.connect();
       const result = await client.query(
-        `INSERT INTO products (name, description, price, category, imageUrl, benefits, usage, ingredients)
+        `INSERT INTO products (name, description, price, category, image_url, benefits, usage, ingredients)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
          RETURNING *`,
         [
@@ -86,6 +87,7 @@ export const storage = {
         ...row,
         id: row.id.toString(),
         price: row.price?.toString() || '0',
+        imageUrl: row.image_url,
         createdAt: row.created_at
       };
     } finally {
