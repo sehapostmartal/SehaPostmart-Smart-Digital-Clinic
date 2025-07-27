@@ -149,51 +149,40 @@ export const storage = {
     }
   },
 
+  // هذا هو الإصدار الصحيح للدالة
   async createArticle(article: InsertArticle): Promise<Article> {
     const client = createClient();
     try {
       await client.connect();
-      const excerpt = article.content.substring(0, 150) + '...';
-      const result = await client.query(
-        `INSERT INTO articles (title, content, category, image, excerpt, author, featured)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
-         RETURNING *`,
-        [
-          article.title,
-          article.content,
-          article.category,
-          article.imageUrl || '',
-          excerpt,
-          'المدير',
-          'false'
-        ]
-      );
 
+      // نحن نأخذ فقط البيانات التي لدينا أعمدة لها
+      const { title, category, content, imageUrl } = article;
+
+      const query = `
+        -- نستخدم فقط الأعمدة الموجودة فعليًا في قاعدة البيانات
+        INSERT INTO articles (title, category, content, "imageUrl", date)
+        VALUES ($1, $2, $3, $4, NOW())
+        RETURNING *;
+      `;
+
+      // نمرر فقط القيم الصحيحة بالترتيب الصحيح
+      const values = [title, category, content, imageUrl];
+
+      const result = await client.query(query, values);
       const row = result.rows[0];
+
+      // نعيد البيانات بشكل صحيح
       return {
         ...row,
         id: row.id.toString(),
-        createdAt: row.created_at,
-        imageUrl: row.image,
-        excerpt: row.excerpt,
-        readTime: '5 دقائق',
-        featured: row.featured,
-        author: row.author
+        imageUrl: row.imageUrl, // تأكد من أن الاسم صحيح
+        createdAt: row.created_at
       };
     } finally {
       await client.end();
     }
-  },
+  }
 
-  async deleteArticle(id: string): Promise<void> {
-    const client = createClient();
-    try {
-      await client.connect();
-      await client.query('DELETE FROM articles WHERE id = $1', [id]);
-    } finally {
-      await client.end();
-    }
-  },
 
   // Placeholder methods for other entities (implement as needed)
   async getConsultations(): Promise<Consultation[]> {

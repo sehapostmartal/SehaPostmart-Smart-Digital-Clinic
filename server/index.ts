@@ -60,62 +60,77 @@ app.use((req, res, next) => {
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
+  const port = parseInt(process.env.PORT || "5000", 10);
+  server.listen(
+    {
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    },
+    () => {
+      log(`serving on port ${port}`);
+    },
+  );
 })();
 
 // --- Articles API Endpoints ---
 
 // Get all articles
-app.get('/api/articles', async (req, res) => {
+app.get("/api/articles", async (req, res) => {
   try {
     const articles = await storage.getArticles();
     res.json(articles);
   } catch (error) {
-    console.error('Error fetching articles:', error);
-    res.status(500).json({ error: 'Failed to fetch articles' });
+    console.error("Error fetching articles:", error);
+    res.status(500).json({ error: "Failed to fetch articles" });
   }
 });
 
 // Add a new article
-app.post('/api/articles', async (req, res) => {
+// Add a new article
+app.post("/api/articles", async (req, res) => {
   try {
     const { title, category, content, imageUrl } = req.body;
+
+    // Log the incoming request body for debugging
+    console.log("Incoming request body:", req.body);
+
     if (!title || !content) {
-      return res.status(400).json({ error: 'Article title and content are required.' });
+      return res
+        .status(400)
+        .json({ error: "Article title and content are required." });
     }
-    const newArticle = await storage.createArticle({ 
-      title, 
-      category: category || 'صحة عامة', 
-      content, 
-      imageUrl: imageUrl || ''
+
+    const newArticle = await storage.createArticle({
+      title,
+      category: category || "صحة عامة",
+      content,
+      imageUrl: imageUrl || "",
     });
+
     res.status(201).json(newArticle);
   } catch (error) {
-    console.error('Error adding article:', error);
-    res.status(500).json({ error: 'Failed to add article' });
+    // Log the complete error object to provide more context
+    console.error("Error adding article:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to add article", details: error.message });
   }
 });
 
 // Delete an article
-app.delete('/api/articles/:id', async (req, res) => {
+app.delete("/api/articles/:id", async (req, res) => {
   try {
     const { id } = req.params;
     await storage.deleteArticle(id);
     res.status(204).send();
   } catch (error) {
-    console.error('Error deleting article:', error);
-    res.status(500).json({ error: 'Failed to delete article' });
+    console.error("Error deleting article:", error);
+    res.status(500).json({ error: "Failed to delete article" });
   }
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -1,18 +1,17 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 // This is the main component for the entire Admin Page
 const AdminPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
 
   const handleLogin = () => {
     // IMPORTANT: This is a simple, hardcoded password.
     // For a real application, a proper authentication system is needed.
-    if (password === 'dxn123') {
+    if (password === "dxn123") {
       setIsAuthenticated(true);
     } else {
-      alert('كلمة المرور غير صحيحة');
+      alert("كلمة المرور غير صحيحة");
     }
   };
 
@@ -21,12 +20,14 @@ const AdminPage = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-sm">
-          <h1 className="text-2xl font-bold text-center mb-6">لوحة التحكم - تسجيل الدخول</h1>
+          <h1 className="text-2xl font-bold text-center mb-6">
+            لوحة التحكم - تسجيل الدخول
+          </h1>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+            onKeyPress={(e) => e.key === "Enter" && handleLogin()}
             placeholder="أدخل كلمة المرور"
             className="w-full px-4 py-2 border rounded-lg text-center"
           />
@@ -47,24 +48,24 @@ const AdminPage = () => {
 
 // This is the new AdminDashboard component with Tabs
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('products');
+  const [activeTab, setActiveTab] = useState("products");
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-green-800 mb-6">لوحة التحكم</h1>
-      
+
       {/* Tab Navigation */}
       <div className="mb-8 border-b border-gray-200">
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
           <button
-            onClick={() => setActiveTab('products')}
-            className={`${activeTab === 'products' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            onClick={() => setActiveTab("products")}
+            className={`${activeTab === "products" ? "border-green-500 text-green-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
             إدارة المنتجات
           </button>
           <button
-            onClick={() => setActiveTab('articles')}
-            className={`${activeTab === 'articles' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            onClick={() => setActiveTab("articles")}
+            className={`${activeTab === "articles" ? "border-green-500 text-green-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
             إدارة المقالات
           </button>
@@ -73,8 +74,8 @@ const AdminDashboard = () => {
 
       {/* Content based on active tab */}
       <div>
-        {activeTab === 'products' && <ProductManager />}
-        {activeTab === 'articles' && <ArticleManager />}
+        {activeTab === "products" && <ProductManager />}
+        {activeTab === "articles" && <ArticleManager />}
       </div>
     </div>
   );
@@ -83,14 +84,14 @@ const AdminDashboard = () => {
 // The component for managing products
 const ProductManager = () => {
   // State for the form
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState('المكملات الغذائية');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
-  const [benefits, setBenefits] = useState('');
-  const [usage, setUsage] = useState('');
-  const [ingredients, setIngredients] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("المكملات الغذائية");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [benefits, setBenefits] = useState("");
+  const [usage, setUsage] = useState("");
+  const [ingredients, setIngredients] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [isFeatured, setIsFeatured] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -100,7 +101,7 @@ const ProductManager = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('/api/products');
+      const response = await fetch("/api/products");
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -115,14 +116,14 @@ const ProductManager = () => {
   }, []);
 
   const handleDelete = async (productId: string) => {
-    if (window.confirm('هل أنت متأكد من أنك تريد حذف هذا المنتج؟')) {
+    if (window.confirm("هل أنت متأكد من أنك تريد حذف هذا المنتج؟")) {
       try {
-        await fetch(`/api/products/${productId}`, { method: 'DELETE' });
-        alert('تم حذف المنتج بنجاح.');
+        await fetch(`/api/products/${productId}`, { method: "DELETE" });
+        alert("تم حذف المنتج بنجاح.");
         fetchProducts(); // Refresh the list
       } catch (error) {
-        console.error('Failed to delete product:', error);
-        alert('فشلت عملية الحذف.');
+        console.error("Failed to delete product:", error);
+        alert("فشلت عملية الحذف.");
       }
     }
   };
@@ -131,19 +132,37 @@ const ProductManager = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, category, price, description, benefits, usage, ingredients, imageUrl, isFeatured }),
+      const response = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          category,
+          price,
+          description,
+          benefits,
+          usage,
+          ingredients,
+          imageUrl,
+          isFeatured,
+        }),
       });
-      if (!response.ok) throw new Error('Network response was not ok');
+      if (!response.ok) throw new Error("Network response was not ok");
       const newProduct = await response.json();
       alert(`تمت إضافة المنتج بنجاح! المنتج: ${newProduct.name}`);
-      setName(''); setCategory('المكملات الغذائية'); setPrice(''); setDescription(''); setBenefits(''); setUsage(''); setIngredients(''); setImageUrl(''); setIsFeatured(false);
+      setName("");
+      setCategory("المكملات الغذائية");
+      setPrice("");
+      setDescription("");
+      setBenefits("");
+      setUsage("");
+      setIngredients("");
+      setImageUrl("");
+      setIsFeatured(false);
       fetchProducts(); // Refresh the list
     } catch (error) {
-      console.error('Failed to add product:', error);
-      alert('فشلت عملية إضافة المنتج.');
+      console.error("Failed to add product:", error);
+      alert("فشلت عملية إضافة المنتج.");
     } finally {
       setIsSubmitting(false);
     }
@@ -155,44 +174,167 @@ const ProductManager = () => {
       <div className="bg-white p-8 rounded-lg shadow-md mb-8">
         <h2 className="text-2xl font-semibold mb-6">إضافة منتج جديد</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div><label className="block text-sm font-medium text-gray-700">اسم المنتج</label><input type="text" value={name} onChange={(e) => setName(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md p-2" required /></div>
-          <div><label className="block text-sm font-medium text-gray-700">التصنيف</label><select value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md p-2"><option>المكملات الغذائية</option><option>المشروبات الصحية</option><option>العناية الشخصية</option></select></div>
-          <div><label className="block text-sm font-medium text-gray-700">السعر</label><input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md p-2" required /></div>
-          <div><label className="block text-sm font-medium text-gray-700">الوصف</label><textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
-          <div><label className="block text-sm font-medium text-gray-700">الفوائد</label><textarea value={benefits} onChange={(e) => setBenefits(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
-          <div><label className="block text-sm font-medium text-gray-700">طريقة الاستخدام</label><textarea value={usage} onChange={(e) => setUsage(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
-          <div><label className="block text-sm font-medium text-gray-700">المكونات</label><textarea value={ingredients} onChange={(e) => setIngredients(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
-          <div className="flex items-center">
-            <input type="checkbox" id="isFeatured" checked={isFeatured} onChange={(e) => setIsFeatured(e.target.checked)} className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500" />
-            <label htmlFor="isFeatured" className="ml-2 block text-sm font-medium text-gray-900">تمييز كمنتج مقترح</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              اسم المنتج
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              required
+            />
           </div>
-          <div><label className="block text-sm font-medium text-gray-700">رابط الصورة</label><input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md p-2" /></div>
-          <div><button type="submit" disabled={isSubmitting} className="w-full flex justify-center py-2 px-4 border rounded-md text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-400">{isSubmitting ? 'جاري الإضافة...' : 'إضافة المنتج'}</button></div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              التصنيف
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            >
+              <option>المكملات الغذائية</option>
+              <option>المشروبات الصحية</option>
+              <option>العناية الشخصية</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              السعر
+            </label>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              الوصف
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              الفوائد
+            </label>
+            <textarea
+              value={benefits}
+              onChange={(e) => setBenefits(e.target.value)}
+              rows={2}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              طريقة الاستخدام
+            </label>
+            <textarea
+              value={usage}
+              onChange={(e) => setUsage(e.target.value)}
+              rows={2}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              المكونات
+            </label>
+            <textarea
+              value={ingredients}
+              onChange={(e) => setIngredients(e.target.value)}
+              rows={2}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            ></textarea>
+          </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="isFeatured"
+              checked={isFeatured}
+              onChange={(e) => setIsFeatured(e.target.checked)}
+              className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+            />
+            <label
+              htmlFor="isFeatured"
+              className="ml-2 block text-sm font-medium text-gray-900"
+            >
+              تمييز كمنتج مقترح
+            </label>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              رابط الصورة
+            </label>
+            <input
+              type="text"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            />
+          </div>
+          <div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full flex justify-center py-2 px-4 border rounded-md text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-400"
+            >
+              {isSubmitting ? "جاري الإضافة..." : "إضافة المنتج"}
+            </button>
+          </div>
         </form>
       </div>
 
       {/* Product List */}
       <div className="bg-white p-8 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-6">قائمة المنتجات الحالية</h2>
-        {isLoading ? <p>جاري تحميل المنتجات...</p> : (
+        {isLoading ? (
+          <p>جاري تحميل المنتجات...</p>
+        ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gray-50"><tr><th className="p-2 text-right">الاسم</th><th className="p-2 text-right">التصنيف</th><th className="p-2 text-right">السعر</th><th className="p-2 text-center">مقترح</th><th className="p-2">إجراء</th></tr></thead>
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="p-2 text-right">الاسم</th>
+                  <th className="p-2 text-right">التصنيف</th>
+                  <th className="p-2 text-right">السعر</th>
+                  <th className="p-2 text-center">مقترح</th>
+                  <th className="p-2">إجراء</th>
+                </tr>
+              </thead>
               <tbody>
-                {products.map(product => (
+                {products.map((product) => (
                   <tr key={product.id} className="border-b">
                     <td className="p-2">{product.name}</td>
                     <td className="p-2">{product.category}</td>
                     <td className="p-2">${product.price}</td>
                     <td className="p-2 text-center">
                       {product.isFeatured ? (
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">مميز</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                          مميز
+                        </span>
                       ) : (
-                        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">عادي</span>
+                        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
+                          عادي
+                        </span>
                       )}
                     </td>
                     <td className="p-2 text-center">
-                      <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600 hover:bg-red-50">حذف</button>
+                      <button
+                        onClick={() => handleDelete(product.id)}
+                        className="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600 hover:bg-red-50"
+                      >
+                        حذف
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -207,10 +349,10 @@ const ProductManager = () => {
 
 // The new component for managing articles
 const ArticleManager = () => {
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('صحة عامة');
-  const [content, setContent] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("صحة عامة");
+  const [content, setContent] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [articles, setArticles] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -218,7 +360,7 @@ const ArticleManager = () => {
   const fetchArticles = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/articles');
+      const response = await fetch("/api/articles");
       const data = await response.json();
       setArticles(data);
     } catch (error) {
@@ -232,36 +374,48 @@ const ArticleManager = () => {
     fetchArticles();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const articleData = {
+      title: titleInput.value, // Make sure titleInput and contentInput references are correctly set up
+      category: categoryInput.value,
+      content: contentInput.value,
+      imageUrl: imageUrlInput.value,
+    };
+
     try {
-      const response = await fetch('/api/articles', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, category, content, imageUrl }),
+      const response = await fetch("/api/articles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(articleData),
       });
-      if (!response.ok) throw new Error('Network response was not ok');
-      alert('تمت إضافة المقال بنجاح.');
-      setTitle(''); setCategory('صحة عامة'); setContent(''); setImageUrl('');
-      fetchArticles();
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to add article");
+      }
+
+      const newArticle = await response.json();
+      console.log("Article added successfully:", newArticle);
+      // Add further success handling here
     } catch (error) {
-      console.error('Failed to add article:', error);
-      alert('فشلت عملية إضافة المقال.');
-    } finally {
-      setIsSubmitting(false);
+      console.error("Failed to add article:", error);
+      // Handle the error in the UI as well
     }
   };
 
   const handleDelete = async (articleId: string) => {
-    if (window.confirm('هل أنت متأكد من أنك تريد حذف هذا المقال؟')) {
+    if (window.confirm("هل أنت متأكد من أنك تريد حذف هذا المقال؟")) {
       try {
-        await fetch(`/api/articles/${articleId}`, { method: 'DELETE' });
-        alert('تم حذف المقال بنجاح.');
+        await fetch(`/api/articles/${articleId}`, { method: "DELETE" });
+        alert("تم حذف المقال بنجاح.");
         fetchArticles();
       } catch (error) {
-        console.error('Failed to delete article:', error);
-        alert('فشلت عملية الحذف.');
+        console.error("Failed to delete article:", error);
+        alert("فشلت عملية الحذف.");
       }
     }
   };
@@ -272,26 +426,92 @@ const ArticleManager = () => {
       <div className="bg-white p-8 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-6">إضافة مقال جديد</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div><label className="block text-sm font-medium text-gray-700">عنوان المقال</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 block w-full border border-gray-300 p-2 rounded-md" required /></div>
-          <div><label className="block text-sm font-medium text-gray-700">التصنيف</label><select value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full border border-gray-300 p-2 rounded-md"><option>صحة عامة</option><option>التغذية</option><option>المناعة</option><option>التركيز</option></select></div>
-          <div><label className="block text-sm font-medium text-gray-700">المحتوى</label><textarea value={content} onChange={(e) => setContent(e.target.value)} rows={8} className="mt-1 block w-full border border-gray-300 p-2 rounded-md" required></textarea></div>
-          <div><label className="block text-sm font-medium text-gray-700">رابط الصورة</label><input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="mt-1 block w-full border border-gray-300 p-2 rounded-md" /></div>
-          <div><button type="submit" disabled={isSubmitting} className="w-full py-2 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400">{isSubmitting ? 'جاري الإضافة...' : 'إضافة المقال'}</button></div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              عنوان المقال
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 p-2 rounded-md"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              التصنيف
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 p-2 rounded-md"
+            >
+              <option>صحة عامة</option>
+              <option>التغذية</option>
+              <option>المناعة</option>
+              <option>التركيز</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              المحتوى
+            </label>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              rows={8}
+              className="mt-1 block w-full border border-gray-300 p-2 rounded-md"
+              required
+            ></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              رابط الصورة
+            </label>
+            <input
+              type="text"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 p-2 rounded-md"
+            />
+          </div>
+          <div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-2 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
+            >
+              {isSubmitting ? "جاري الإضافة..." : "إضافة المقال"}
+            </button>
+          </div>
         </form>
       </div>
-      
+
       {/* Article List */}
       <div className="bg-white p-8 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-6">قائمة المقالات الحالية</h2>
-        {isLoading ? <p>جاري تحميل المقالات...</p> : (
+        {isLoading ? (
+          <p>جاري تحميل المقالات...</p>
+        ) : (
           <div className="space-y-4">
-            {articles.map(article => (
-              <div key={article.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            {articles.map((article) => (
+              <div
+                key={article.id}
+                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
+              >
                 <div>
-                  <h3 className="font-semibold text-gray-900">{article.title}</h3>
+                  <h3 className="font-semibold text-gray-900">
+                    {article.title}
+                  </h3>
                   <p className="text-sm text-gray-500">{article.category}</p>
                 </div>
-                <button onClick={() => handleDelete(article.id)} className="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600 hover:bg-red-50 text-sm">حذف</button>
+                <button
+                  onClick={() => handleDelete(article.id)}
+                  className="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600 hover:bg-red-50 text-sm"
+                >
+                  حذف
+                </button>
               </div>
             ))}
           </div>
