@@ -56,6 +56,7 @@ const AdminDashboard = () => {
   const [usage, setUsage] = useState('');
   const [ingredients, setIngredients] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [isFeatured, setIsFeatured] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // State for the product list
@@ -98,12 +99,12 @@ const AdminDashboard = () => {
       const response = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, category, price, description, benefits, usage, ingredients, imageUrl }),
+        body: JSON.stringify({ name, category, price, description, benefits, usage, ingredients, imageUrl, isFeatured }),
       });
       if (!response.ok) throw new Error('Network response was not ok');
       const newProduct = await response.json();
       alert(`تمت إضافة المنتج بنجاح! المنتج: ${newProduct.name}`);
-      setName(''); setCategory('المكملات الغذائية'); setPrice(''); setDescription(''); setBenefits(''); setUsage(''); setIngredients(''); setImageUrl('');
+      setName(''); setCategory('المكملات الغذائية'); setPrice(''); setDescription(''); setBenefits(''); setUsage(''); setIngredients(''); setImageUrl(''); setIsFeatured(false);
       fetchProducts(); // Refresh the list
     } catch (error) {
       console.error('Failed to add product:', error);
@@ -128,6 +129,10 @@ const AdminDashboard = () => {
           <div><label className="block text-sm font-medium text-gray-700">الفوائد</label><textarea value={benefits} onChange={(e) => setBenefits(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
           <div><label className="block text-sm font-medium text-gray-700">طريقة الاستخدام</label><textarea value={usage} onChange={(e) => setUsage(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
           <div><label className="block text-sm font-medium text-gray-700">المكونات</label><textarea value={ingredients} onChange={(e) => setIngredients(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
+          <div className="flex items-center">
+            <input type="checkbox" id="isFeatured" checked={isFeatured} onChange={(e) => setIsFeatured(e.target.checked)} className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500" />
+            <label htmlFor="isFeatured" className="ml-2 block text-sm font-medium text-gray-900">تمييز كمنتج مقترح</label>
+          </div>
           <div><label className="block text-sm font-medium text-gray-700">رابط الصورة</label><input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md p-2" /></div>
           <div><button type="submit" disabled={isSubmitting} className="w-full flex justify-center py-2 px-4 border rounded-md text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-400">{isSubmitting ? 'جاري الإضافة...' : 'إضافة المنتج'}</button></div>
         </form>
@@ -139,13 +144,20 @@ const AdminDashboard = () => {
         {isLoading ? <p>جاري تحميل المنتجات...</p> : (
           <div className="overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gray-50"><tr><th className="p-2 text-right">الاسم</th><th className="p-2 text-right">التصنيف</th><th className="p-2 text-right">السعر</th><th className="p-2">إجراء</th></tr></thead>
+              <thead className="bg-gray-50"><tr><th className="p-2 text-right">الاسم</th><th className="p-2 text-right">التصنيف</th><th className="p-2 text-right">السعر</th><th className="p-2 text-center">مقترح</th><th className="p-2">إجراء</th></tr></thead>
               <tbody>
                 {products.map(product => (
                   <tr key={product.id} className="border-b">
                     <td className="p-2">{product.name}</td>
                     <td className="p-2">{product.category}</td>
                     <td className="p-2">${product.price}</td>
+                    <td className="p-2 text-center">
+                      {product.isFeatured ? (
+                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">مميز</span>
+                      ) : (
+                        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">عادي</span>
+                      )}
+                    </td>
                     <td className="p-2 text-center">
                       <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600 hover:bg-red-50">حذف</button>
                     </td>

@@ -35,6 +35,8 @@ export const storage = {
         ...row,
         id: row.id.toString(),
         price: row.price?.toString() || '0',
+        imageUrl: row.image_url,
+        isFeatured: row.is_featured,
         createdAt: row.created_at
       }));
     } finally {
@@ -67,8 +69,8 @@ export const storage = {
     try {
       await client.connect();
       const result = await client.query(
-        `INSERT INTO products (name, description, price, category, image_url, benefits, usage, ingredients)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        `INSERT INTO products (name, description, price, category, image_url, benefits, usage, ingredients, is_featured)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
          RETURNING *`,
         [
           product.name,
@@ -78,7 +80,8 @@ export const storage = {
           product.imageUrl,
           product.benefits,
           product.usage,
-          product.ingredients
+          product.ingredients,
+          product.isFeatured || false
         ]
       );
 
@@ -88,6 +91,7 @@ export const storage = {
         id: row.id.toString(),
         price: row.price?.toString() || '0',
         imageUrl: row.image_url,
+        isFeatured: row.is_featured,
         createdAt: row.created_at
       };
     } finally {
