@@ -1,0 +1,88 @@
+I want to fully implement the "Add Product" functionality for our Admin Panel. This requires changes in three files: the server endpoint, the storage layer, and the admin page frontend. Please perform the following three tasks in order.
+Task 1: Create the server-side endpoint.
+In the file '@server/index.ts', just before the 'app.listen' line, add this code to define a new POST endpoint at '/api/products':
+ts
+// Endpoint to add a new product
+app.post('/api/products', async (req, res) => {
+  try {
+    const { name, category, price, description, benefits, usage, ingredients, imageUrl } = req.body;
+    if (!name || !price) {
+      return res.status(400).json({ error: 'Product name and price are required.' });
+    }
+    const newProduct = await storage.addProduct({
+      name,
+      category,
+      price: parseFloat(price),
+      description,
+      benefits,
+      usage,
+      ingredients,
+      imageUrl,
+    });
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.error('Error adding product:', error);
+    res.status(500).json({ error: 'Failed to add product' });
+  }
+});
+Task 2: Implement the storage function.
+In the file '@server/storage.ts', add the following 'addProduct' method inside the 'PostgresStorage' class:
+ts
+// Method to add a new product
+async addProduct(productData: Omit<Product, 'id' | 'created_at'>): Promise<Product> {
+  const { name, category, price, description, benefits, usage, ingredients, imageUrl } = productData;
+  const query = `
+    INSERT INTO products (name, category, price, description, benefits, usage, ingredients, "imageUrl")
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    RETURNING *;
+  `;
+  const values = [name, category, price, description, benefits, usage, ingredients, imageUrl];
+  
+  const result = await this.pool.query(query, values);
+  return result.rows[0];
+}
+Task 3: Connect the frontend form.
+Finally, in the file '@src/pages/Admin.tsx', replace the existing 'handleSubmit' function inside the 'AdminDashboard' component with this new async version that sends the data to the server:
+ts
+// New handleSubmit function to send data to the API
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  try {
+    const response = await fetch('/api/products', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        category,
+        price,
+        description,
+        benefits,
+        usage,
+        ingredients,
+        imageUrl,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const newProduct = await response.json();
+    alert(`تمت إضافة المنتج بنجاح! المنتج: ${newProduct.name}`);
+    setName('');
+    setCategory('المكملات الغذائية');
+    setPrice('');
+    setDescription('');
+    setBenefits('');
+    setUsage('');
+    setIngredients('');
+    setImageUrl('');
+  } catch (error) {
+    console.error('Failed to add product:', error);
+    alert('فشلت عملية إضافة المنتج. يرجى المحاولة مرة أخرى.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+Please apply these changes. This should make the "Add Product" form fully functional.
