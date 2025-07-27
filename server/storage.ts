@@ -153,17 +153,19 @@ export const storage = {
     const client = createClient();
     try {
       await client.connect();
+      const excerpt = article.content.substring(0, 150) + '...';
       const result = await client.query(
-        `INSERT INTO articles (title, content, category, image, excerpt, featured)
-         VALUES ($1, $2, $3, $4, $5, $6)
+        `INSERT INTO articles (title, content, category, image, excerpt, author, featured)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
          RETURNING *`,
         [
           article.title,
           article.content,
           article.category,
-          article.imageUrl,
-          article.excerpt,
-          article.featured || 'false'
+          article.imageUrl || '',
+          excerpt,
+          'المدير',
+          'false'
         ]
       );
 
@@ -175,7 +177,8 @@ export const storage = {
         imageUrl: row.image,
         excerpt: row.excerpt,
         readTime: '5 دقائق',
-        featured: row.featured
+        featured: row.featured,
+        author: row.author
       };
     } finally {
       await client.end();

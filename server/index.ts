@@ -90,7 +90,12 @@ app.post('/api/articles', async (req, res) => {
     if (!title || !content) {
       return res.status(400).json({ error: 'Article title and content are required.' });
     }
-    const newArticle = await storage.createArticle({ title, category, content, imageUrl, excerpt: content.substring(0, 150) + '...', readTime: '5 دقائق', featured: 'false' });
+    const newArticle = await storage.createArticle({ 
+      title, 
+      category: category || 'صحة عامة', 
+      content, 
+      imageUrl: imageUrl || ''
+    });
     res.status(201).json(newArticle);
   } catch (error) {
     console.error('Error adding article:', error);
