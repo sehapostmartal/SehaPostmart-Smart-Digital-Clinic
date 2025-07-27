@@ -1,0 +1,207 @@
+We need to build the management functionality for blog articles in our Admin Panel, similar to what we did for products. This involves creating new server endpoints and updating the Admin Panel UI.
+Task 1: Create server endpoints for Articles (Get, Add, Delete).
+In the file '@server/index.ts', please add the following three new endpoints for handling articles. This code can be placed after the product endpoints:
+ts
+// --- Articles API Endpoints ---
+
+// Get all articles
+app.get('/api/articles', async (req, res) => {
+  try {
+    const articles = await storage.getArticles();
+    res.json(articles);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    res.status(500).json({ error: 'Failed to fetch articles' });
+  }
+});
+
+// Add a new article
+app.post('/api/articles', async (req, res) => {
+  try {
+    const { title, category, content, imageUrl } = req.body;
+    if (!title || !content) {
+      return res.status(400).json({ error: 'Article title and content are required.' });
+    }
+    const newArticle = await storage.addArticle({ title, category, content, imageUrl });
+    res.status(201).json(newArticle);
+  } catch (error) {
+    console.error('Error adding article:', error);
+    res.status(500).json({ error: 'Failed to add article' });
+  }
+});
+
+// Delete an article
+app.delete('/api/articles/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await storage.deleteArticle(parseInt(id));
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting article:', error);
+    res.status(500).json({ error: 'Failed to delete article' });
+  }
+});
+Task 2: Implement storage functions for Articles.
+In the file '@server/storage.ts', please add the following two new methods to the 'PostgresStorage' class. The 'getArticles' method already exists, so we only need to add 'addArticle' and 'deleteArticle'.
+ts
+// Method to add a new article
+async addArticle(articleData: Omit<Article, 'id' | 'created_at' | 'date'>): Promise<Article> {
+  const { title, category, content, imageUrl } = articleData;
+  const query = `
+    INSERT INTO articles (title, category, content, "imageUrl", date)
+    VALUES ($1, $2, $3, $4, NOW())
+    RETURNING *;
+  `;
+  const values = [title, category, content, imageUrl];
+  const result = await this.pool.query(query, values);
+  return result.rows[0];
+}
+
+// Method to delete an article by ID
+async deleteArticle(id: number): Promise<void> {
+  const query = 'DELETE FROM articles WHERE id = $1';
+  await this.pool.query(query, [id]);
+}
+Task 3: Upgrade the Admin Panel UI to manage articles.
+Finally, in the file '@src/pages/Admin.tsx', replace the entire 'AdminDashboard' component with this new, ultimate version. This version will use tabs to manage Products and Articles separately.
+tsx
+// This is the new, ultimate AdminDashboard component with Tabs
+const AdminDashboard = () => {
+  const [activeTab, setActiveTab] = useState('products');
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-green-800 mb-6">لوحة التحكم</h1>
+      
+      {/* Tab Navigation */}
+      <div className="mb-8 border-b border-gray-200">
+        <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+          <button
+            onClick={() => setActiveTab('products')}
+            className={`${activeTab === 'products' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+          >
+            إدارة المنتجات
+          </button>
+          <button
+            onClick={() => setActiveTab('articles')}
+            className={`${activeTab === 'articles' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+          >
+            إدارة المقالات
+          </button>
+        </nav>
+      </div>
+
+      {/* Content based on active tab */}
+      <div>
+        {activeTab === 'products' && <ProductManager />}
+        {activeTab === 'articles' && <ArticleManager />}
+      </div>
+    </div>
+  );
+};
+
+// You can keep the existing ProductManager component (the previous AdminDashboard)
+// and we will create a new ArticleManager component.
+// For simplicity, let's put everything in the same file for now.
+
+// The component for managing products (previously the main part of AdminDashboard)
+const ProductManager = () => {
+  // All the state and functions for products (useState, handleSubmit, handleDelete, fetchProducts)
+  // from the previous version should be moved here.
+  // This is a placeholder to illustrate the structure. The assistant should move the full code.
+  return <div>Product management interface goes here.</div>
+}
+
+// The new component for managing articles
+const ArticleManager = () => {
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('صحة عامة');
+  const [content, setContent] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [articles, setArticles] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchArticles = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/articles');
+      const data = await response.json();
+      setArticles(data);
+    } catch (error) {
+      console.error("Failed to fetch articles:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await fetch('/api/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, category, content, imageUrl }),
+      });
+      alert('تمت إضافة المقال بنجاح.');
+      setTitle(''); setCategory('صحة عامة'); setContent(''); setImageUrl('');
+      fetchArticles();
+    } catch (error) {
+      alert('فشلت عملية إضافة المقال.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (articleId: number) => {
+    if (window.confirm('هل أنت متأكد من أنك تريد حذف هذا المقال؟')) {
+      try {
+        await fetch(`/api/articles/${articleId}`, { method: 'DELETE' });
+        alert('تم حذف المقال بنجاح.');
+        fetchArticles();
+      } catch (error) {
+        alert('فشلت عملية الحذف.');
+      }
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Add Article Form */}
+      <div className="bg-white p-8 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold mb-6">إضافة مقال جديد</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div><label>عنوان المقال</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 block w-full border p-2 rounded-md" required /></div>
+          <div><label>التصنيف</label><input type="text" value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full border p-2 rounded-md" /></div>
+          <div><label>المحتوى</label><textarea value={content} onChange={(e) => setContent(e.target.value)} rows={8} className="mt-1 block w-full border p-2 rounded-md" required></textarea></div>
+          <div><label>رابط الصورة</label><input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="mt-1 block w-full border p-2 rounded-md" /></div>
+          <div><button type="submit" disabled={isSubmitting} className="w-full py-2 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400">{isSubmitting ? 'جاري الإضافة...' : 'إضافة المقال'}</button></div>
+        </form>
+      </div>
+      {/* Article List */}
+      <div className="bg-white p-8 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold mb-6">قائمة المقالات الحالية</h2>
+        {isLoading ? <p>جاري تحميل المقالات...</p> : (
+          <ul className="space-y-4">
+            {articles.map(article => (
+              <li key={article.id} className="flex items-center justify-between p-2 border-b">
+                <span>{article.title}</span>
+                <button onClick={() => handleDelete(article.id)} className="text-red-600 hover:text-red-800 text-sm">حذف</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// I have intentionally left the ProductManager component as a placeholder.
+// The assistant should be smart enough to move the existing product management code
+// from the old AdminDashboard into a new component named ProductManager and place it
+// in the same Admin.tsx file.
