@@ -60,9 +60,48 @@ const AdminDashboard = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    alert('سيتم ربط هذا الزر قريباً لإضافة المنتج فعلياً.');
-    // In the next step, we will add the logic to send this data to the server.
-    setIsSubmitting(false);
+
+    try {
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          category,
+          price,
+          description,
+          benefits,
+          usage,
+          ingredients,
+          imageUrl,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const newProduct = await response.json();
+      alert(`تمت إضافة المنتج بنجاح! المنتج: ${newProduct.name}`);
+      
+      // Clear the form for the next entry
+      setName('');
+      setCategory('المكملات الغذائية');
+      setPrice('');
+      setDescription('');
+      setBenefits('');
+      setUsage('');
+      setIngredients('');
+      setImageUrl('');
+
+    } catch (error) {
+      console.error('Failed to add product:', error);
+      alert('فشلت عملية إضافة المنتج. يرجى المحاولة مرة أخرى.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
