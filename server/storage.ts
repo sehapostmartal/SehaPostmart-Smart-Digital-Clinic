@@ -1,211 +1,203 @@
-import { Client } from 'pg';
-import { 
-  type User, 
-  type InsertUser, 
-  type Product, 
-  type InsertProduct, 
-  type Article, 
-  type InsertArticle, 
-  type Consultation, 
-  type InsertConsultation, 
-  type Membership, 
-  type InsertMembership
-} from "@shared/schema";
-
-// PostgreSQL client setup
-import { Client } from 'pg';
-import type { Product, Article, Consultation, Membership, InsertProduct, InsertArticle, InsertConsultation, InsertMembership } from "@shared/schema";
+import { Client } from "pg";
+import {
+  type User,
+  type InsertUser,
+  type Product,
+  type InsertProduct,
+  type Article,
+  type InsertArticle,
+  type Consultation,
+  type InsertConsultation,
+  type Membership,
+  type InsertMembership,
+} from "../../shared/types"; // تم تصحيح المسار هنا أيضًا
 
 function createClient() {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
-    throw new Error('DATABASE_URL environment variable is not set');
+    throw new Error("DATABASE_URL environment variable is not set");
   }
   return new Client({ connectionString: databaseUrl });
 }
 
 export const storage = {
-  // Products
+  // --- Products ---
   async getProducts(): Promise<Product[]> {
     const client = createClient();
     try {
       await client.connect();
-      const result = await client.query('SELECT * FROM products ORDER BY created_at DESC');
-      return result.rows.map(row => ({
-        ...row,
-        id: row.id.toString(),
-        price: row.price?.toString() || '0',
-        imageUrl: row.image_url,
-        isFeatured: row.is_featured,
-        createdAt: row.created_at
-      }));
+      const result = await client.query(
+        "SELECT * FROM products ORDER BY created_at DESC",
+      );
+      return result.rows;
     } finally {
       await client.end();
     }
   },
 
-  async getProduct(id: string): Promise<Product | null> {
-    const client = createClient();
-    try {
-      await client.connect();
-      const result = await client.query('SELECT * FROM products WHERE id = $1', [id]);
-      if (result.rows.length === 0) return null;
-
-      const row = result.rows[0];
-      return {
-        ...row,
-        id: row.id.toString(),
-        price: row.price?.toString() || '0',
-        imageUrl: row.image_url,
-        createdAt: row.created_at
-      };
-    } finally {
-      await client.end();
-    }
-  },
-
-  async createProduct(product: InsertProduct): Promise<Product> {
+  async getProduct(id: number): Promise<Product | null> {
     const client = createClient();
     try {
       await client.connect();
       const result = await client.query(
-        `INSERT INTO products (name, description, price, category, image_url, benefits, usage, ingredients, is_featured)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-         RETURNING *`,
-        [
-          product.name,
-          product.description,
-          product.price,
-          product.category,
-          product.imageUrl,
-          product.benefits,
-          product.usage,
-          product.ingredients,
-          product.isFeatured || false
-        ]
+        "SELECT * FROM products WHERE id = $1",
+        [id],
       );
-
-      const row = result.rows[0];
-      return {
-        ...row,
-        id: row.id.toString(),
-        price: row.price?.toString() || '0',
-        imageUrl: row.image_url,
-        isFeatured: row.is_featured,
-        createdAt: row.created_at
-      };
+      return result.rows.length > 0 ? result.rows[0] : null;
     } finally {
       await client.end();
     }
   },
 
-  async deleteProduct(id: string): Promise<void> {
+  async addProduct(
+    productData: Omit<Product, "id" | "created_at">,
+  ): Promise<Product> {
     const client = createClient();
     try {
       await client.connect();
-      await client.query('DELETE FROM products WHERE id = $1', [id]);
+      const {
+        name,
+        category,
+        price,
+        description,
+        benefits,
+        usage,
+        ingredients,
+        imageUrl,
+        is_featured,
+      } = productData;
+      const query = `
+        INSERT INTO products (name, category, price, description, benefits, usage, ingredients, "imageUrl", is_featured)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING *;
+      `;
+      const values = [
+        name,
+        category,
+        price,
+        description,
+        benefits,
+        usage,
+        ingredients,
+        imageUrl,
+        is_featured || false,
+      ];
+      const result = await client.query(query, values);
+      return result.rows[0];
     } finally {
       await client.end();
     }
   },
 
-  // Articles
+  async deleteProduct(id: number): Promise<void> {
+    const client = createClient();
+    try {
+      await client.connect();
+      await client.query("DELETE FROM products WHERE id = $1", [id]);
+    } finally {
+      await client.end();
+    }
+  },
+
+  async getFeaturedProducts(): Promise<Product[]> {
+    const client = createClient();
+    try {
+      await client.connect();
+      const query = "SELECT * FROM products WHERE is_featured = true LIMIT 6";
+      const result = await client.query(query);
+      return result.rows;
+    } finally {
+      await client.end();
+    }
+  },
+
+  async getRelatedProducts(productId: number): Promise<Product[]> {
+    const client = createClient();
+    try {
+      await client.connect();
+      const query = `
+        SELECT * FROM products
+        WHERE category = (SELECT category FROM products WHERE id = $1)
+        AND id != $1
+        LIMIT 4;
+      `;
+      const result = await client.query(query, [productId]);
+      return result.rows;
+    } finally {
+      await client.end();
+    }
+  },
+
+  // --- Articles ---
   async getArticles(): Promise<Article[]> {
     const client = createClient();
     try {
       await client.connect();
-      const result = await client.query('SELECT * FROM articles ORDER BY created_at DESC');
-      return result.rows.map(row => ({
-        ...row,
-        id: row.id.toString(),
-        createdAt: row.created_at,
-        excerpt: row.content?.substring(0, 150) + '...' || '',
-        readTime: '5 دقائق',
-        featured: 'false'
-      }));
+      const result = await client.query(
+        "SELECT * FROM articles ORDER BY date DESC",
+      );
+      return result.rows;
     } finally {
       await client.end();
     }
   },
 
-  async getArticle(id: string): Promise<Article | null> {
+  async getArticle(id: number): Promise<Article | null> {
     const client = createClient();
     try {
       await client.connect();
-      const result = await client.query('SELECT * FROM articles WHERE id = $1', [id]);
-      if (result.rows.length === 0) return null;
-
-      const row = result.rows[0];
-      return {
-        ...row,
-        id: row.id.toString(),
-        createdAt: row.created_at,
-        excerpt: row.content?.substring(0, 150) + '...' || '',
-        readTime: '5 دقائق',
-        featured: 'false'
-      };
+      const result = await client.query(
+        "SELECT * FROM articles WHERE id = $1",
+        [id],
+      );
+      return result.rows.length > 0 ? result.rows[0] : null;
     } finally {
       await client.end();
     }
   },
 
-  // هذا هو الإصدار الصحيح للدالة
-  async createArticle(article: InsertArticle): Promise<Article> {
+  async addArticle(
+    articleData: Omit<Article, "id" | "created_at" | "date">,
+  ): Promise<Article> {
     const client = createClient();
     try {
       await client.connect();
-
-      // نحن نأخذ فقط البيانات التي لدينا أعمدة لها
-      const { title, category, content, imageUrl } = article;
-
+      const { title, category, content, imageUrl } = articleData;
       const query = `
-        -- نستخدم فقط الأعمدة الموجودة فعليًا في قاعدة البيانات
         INSERT INTO articles (title, category, content, "imageUrl", date)
         VALUES ($1, $2, $3, $4, NOW())
         RETURNING *;
       `;
-
-      // نمرر فقط القيم الصحيحة بالترتيب الصحيح
       const values = [title, category, content, imageUrl];
-
       const result = await client.query(query, values);
-      const row = result.rows[0];
-
-      // نعيد البيانات بشكل صحيح
-      return {
-        ...row,
-        id: row.id.toString(),
-        imageUrl: row.imageUrl, // تأكد من أن الاسم صحيح
-        createdAt: row.created_at
-      };
+      return result.rows[0];
     } finally {
       await client.end();
     }
-  }
-
-
-  // Placeholder methods for other entities (implement as needed)
-  async getConsultations(): Promise<Consultation[]> {
-    return [];
   },
 
-  async createConsultation(consultation: InsertConsultation): Promise<Consultation> {
-    throw new Error('Not implemented');
+  async deleteArticle(id: number): Promise<void> {
+    const client = createClient();
+    try {
+      await client.connect();
+      await client.query("DELETE FROM articles WHERE id = $1", [id]);
+    } finally {
+      await client.end();
+    }
   },
 
-  async getMemberships(): Promise<Membership[]> {
-    return [];
+  // --- Other Entities (Placeholders) ---
+  async createConsultation(
+    consultation: InsertConsultation,
+  ): Promise<Consultation> {
+    throw new Error("Not implemented");
   },
 
   async createMembership(membership: InsertMembership): Promise<Membership> {
-    throw new Error('Not implemented');
-  },
-
-  async getUsers(): Promise<User[]> {
-    return [];
+    throw new Error("Not implemented");
   },
 
   async createUser(user: InsertUser): Promise<User> {
-    throw new Error('Not implemented');
-  }
+    throw new Error("Not implemented");
+  },
 };

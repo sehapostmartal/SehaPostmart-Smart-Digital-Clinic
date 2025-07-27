@@ -114,7 +114,7 @@ app.post("/api/articles", async (req, res) => {
     console.error("Error adding article:", error);
     res
       .status(500)
-      .json({ error: "Failed to add article", details: error.message });
+      .json({ error: "Failed to add article", details: String(error) });
   }
 });
 
@@ -122,7 +122,7 @@ app.post("/api/articles", async (req, res) => {
 app.delete("/api/articles/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await storage.deleteArticle(id);
+    await storage.deleteArticle(Number(id));
     res.status(204).send();
   } catch (error) {
     console.error("Error deleting article:", error);
@@ -131,6 +131,6 @@ app.delete("/api/articles/:id", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(Number(PORT), "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
