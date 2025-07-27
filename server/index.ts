@@ -69,3 +69,48 @@ app.use((req, res, next) => {
     log(`serving on port ${port}`);
   });
 })();
+
+// --- Articles API Endpoints ---
+
+// Get all articles
+app.get('/api/articles', async (req, res) => {
+  try {
+    const articles = await storage.getArticles();
+    res.json(articles);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    res.status(500).json({ error: 'Failed to fetch articles' });
+  }
+});
+
+// Add a new article
+app.post('/api/articles', async (req, res) => {
+  try {
+    const { title, category, content, imageUrl } = req.body;
+    if (!title || !content) {
+      return res.status(400).json({ error: 'Article title and content are required.' });
+    }
+    const newArticle = await storage.createArticle({ title, category, content, imageUrl, excerpt: content.substring(0, 150) + '...', readTime: '5 دقائق', featured: 'false' });
+    res.status(201).json(newArticle);
+  } catch (error) {
+    console.error('Error adding article:', error);
+    res.status(500).json({ error: 'Failed to add article' });
+  }
+});
+
+// Delete an article
+app.delete('/api/articles/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await storage.deleteArticle(id);
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting article:', error);
+    res.status(500).json({ error: 'Failed to delete article' });
+  }
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+});

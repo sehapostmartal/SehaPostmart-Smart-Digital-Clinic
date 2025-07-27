@@ -154,15 +154,16 @@ export const storage = {
     try {
       await client.connect();
       const result = await client.query(
-        `INSERT INTO articles (title, content, category, imageUrl, date)
-         VALUES ($1, $2, $3, $4, $5)
+        `INSERT INTO articles (title, content, category, image, excerpt, featured)
+         VALUES ($1, $2, $3, $4, $5, $6)
          RETURNING *`,
         [
           article.title,
           article.content,
           article.category,
           article.imageUrl,
-          new Date()
+          article.excerpt,
+          article.featured || 'false'
         ]
       );
 
@@ -171,10 +172,21 @@ export const storage = {
         ...row,
         id: row.id.toString(),
         createdAt: row.created_at,
-        excerpt: article.excerpt,
-        readTime: article.readTime,
-        featured: article.featured || 'false'
+        imageUrl: row.image,
+        excerpt: row.excerpt,
+        readTime: '5 دقائق',
+        featured: row.featured
       };
+    } finally {
+      await client.end();
+    }
+  },
+
+  async deleteArticle(id: string): Promise<void> {
+    const client = createClient();
+    try {
+      await client.connect();
+      await client.query('DELETE FROM articles WHERE id = $1', [id]);
     } finally {
       await client.end();
     }

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 
 // This is the main component for the entire Admin Page
@@ -44,9 +45,43 @@ const AdminPage = () => {
   return <AdminDashboard />;
 };
 
-
-// This is the new, complete AdminDashboard component
+// This is the new AdminDashboard component with Tabs
 const AdminDashboard = () => {
+  const [activeTab, setActiveTab] = useState('products');
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-green-800 mb-6">لوحة التحكم</h1>
+      
+      {/* Tab Navigation */}
+      <div className="mb-8 border-b border-gray-200">
+        <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+          <button
+            onClick={() => setActiveTab('products')}
+            className={`${activeTab === 'products' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+          >
+            إدارة المنتجات
+          </button>
+          <button
+            onClick={() => setActiveTab('articles')}
+            className={`${activeTab === 'articles' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+          >
+            إدارة المقالات
+          </button>
+        </nav>
+      </div>
+
+      {/* Content based on active tab */}
+      <div>
+        {activeTab === 'products' && <ProductManager />}
+        {activeTab === 'articles' && <ArticleManager />}
+      </div>
+    </div>
+  );
+};
+
+// The component for managing products
+const ProductManager = () => {
   // State for the form
   const [name, setName] = useState('');
   const [category, setCategory] = useState('المكملات الغذائية');
@@ -115,9 +150,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-green-800 mb-6">لوحة التحكم</h1>
-
+    <div>
       {/* Add Product Form */}
       <div className="bg-white p-8 rounded-lg shadow-md mb-8">
         <h2 className="text-2xl font-semibold mb-6">إضافة منتج جديد</h2>
@@ -165,6 +198,102 @@ const AdminDashboard = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// The new component for managing articles
+const ArticleManager = () => {
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('صحة عامة');
+  const [content, setContent] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [articles, setArticles] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchArticles = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/articles');
+      const data = await response.json();
+      setArticles(data);
+    } catch (error) {
+      console.error("Failed to fetch articles:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, category, content, imageUrl }),
+      });
+      if (!response.ok) throw new Error('Network response was not ok');
+      alert('تمت إضافة المقال بنجاح.');
+      setTitle(''); setCategory('صحة عامة'); setContent(''); setImageUrl('');
+      fetchArticles();
+    } catch (error) {
+      console.error('Failed to add article:', error);
+      alert('فشلت عملية إضافة المقال.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (articleId: string) => {
+    if (window.confirm('هل أنت متأكد من أنك تريد حذف هذا المقال؟')) {
+      try {
+        await fetch(`/api/articles/${articleId}`, { method: 'DELETE' });
+        alert('تم حذف المقال بنجاح.');
+        fetchArticles();
+      } catch (error) {
+        console.error('Failed to delete article:', error);
+        alert('فشلت عملية الحذف.');
+      }
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Add Article Form */}
+      <div className="bg-white p-8 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold mb-6">إضافة مقال جديد</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div><label className="block text-sm font-medium text-gray-700">عنوان المقال</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 block w-full border border-gray-300 p-2 rounded-md" required /></div>
+          <div><label className="block text-sm font-medium text-gray-700">التصنيف</label><select value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full border border-gray-300 p-2 rounded-md"><option>صحة عامة</option><option>التغذية</option><option>المناعة</option><option>التركيز</option></select></div>
+          <div><label className="block text-sm font-medium text-gray-700">المحتوى</label><textarea value={content} onChange={(e) => setContent(e.target.value)} rows={8} className="mt-1 block w-full border border-gray-300 p-2 rounded-md" required></textarea></div>
+          <div><label className="block text-sm font-medium text-gray-700">رابط الصورة</label><input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="mt-1 block w-full border border-gray-300 p-2 rounded-md" /></div>
+          <div><button type="submit" disabled={isSubmitting} className="w-full py-2 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400">{isSubmitting ? 'جاري الإضافة...' : 'إضافة المقال'}</button></div>
+        </form>
+      </div>
+      
+      {/* Article List */}
+      <div className="bg-white p-8 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold mb-6">قائمة المقالات الحالية</h2>
+        {isLoading ? <p>جاري تحميل المقالات...</p> : (
+          <div className="space-y-4">
+            {articles.map(article => (
+              <div key={article.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                <div>
+                  <h3 className="font-semibold text-gray-900">{article.title}</h3>
+                  <p className="text-sm text-gray-500">{article.category}</p>
+                </div>
+                <button onClick={() => handleDelete(article.id)} className="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600 hover:bg-red-50 text-sm">حذف</button>
+              </div>
+            ))}
           </div>
         )}
       </div>
