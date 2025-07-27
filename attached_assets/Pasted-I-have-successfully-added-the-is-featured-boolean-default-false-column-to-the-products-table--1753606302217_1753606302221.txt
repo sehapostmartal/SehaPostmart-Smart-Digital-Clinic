@@ -1,0 +1,61 @@
+I have successfully added the 'is_featured' (boolean, default false) column to the 'products' table. Now, let's update the Admin Panel to manage this new field.
+Task 1: Update the "Add Product" logic on the server.
+In the file '@server/storage.ts', modify the 'addProduct' method to include the 'is_featured' field in the SQL INSERT statement.
+Replace the existing addProduct method with this new version:
+ts
+// New addProduct method with is_featured
+async addProduct(productData: Omit<Product, 'id' | 'created_at'>): Promise<Product> {
+  const { name, category, price, description, benefits, usage, ingredients, imageUrl, is_featured } = productData;
+  const query = `
+    INSERT INTO products (name, category, price, description, benefits, usage, ingredients, "imageUrl", is_featured)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    RETURNING *;
+  `;
+  const values = [name, category, price, description, benefits, usage, ingredients, imageUrl, is_featured || false];
+  
+  const result = await this.pool.query(query, values);
+  return result.rows[0];
+}
+Task 2: Update the server endpoint to accept the new field.
+In the file '@server/index.ts', modify the POST endpoint for '/api/products' to accept the 'is_featured' field from the request body.
+Find the app.post('/api/products', ...) endpoint and update the line where variables are destructured from req.body to include is_featured.
+The new line should look like this:
+ts
+const { name, category, price, description, benefits, usage, ingredients, imageUrl, is_featured } = req.body;
+Also, update the object passed to storage.addProduct to include is_featured.
+The new object should look like this:
+ts
+const newProduct = await storage.addProduct({
+  name,
+  category,
+  price: parseFloat(price),
+  description,
+  benefits,
+  usage,
+  ingredients,
+  imageUrl,
+  is_featured, // Add this line
+});
+Task 3: Update the Admin Panel UI.
+Finally, in the file '@src/pages/Admin.tsx', add a new state for 'is_featured' and a checkbox to the form within the 'AdminDashboard' component.
+Add this new state variable at the top of the AdminDashboard component:
+ts
+const [isFeatured, setIsFeatured] = useState(false);
+Add this checkbox JSX code inside the <form> element, right before the "رابط الصورة" input field:
+tsx
+<div className="flex items-center">
+  <input type="checkbox" id="isFeatured" checked={isFeatured} onChange={(e) => setIsFeatured(e.target.checked)} className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500" />
+  <label htmlFor="isFeatured" className="ml-2 block text-sm font-medium text-gray-900">تمييز كمنتج مقترح</label>
+</div>
+Update the body of the fetch call inside the handleSubmit function to include is_featured:
+ts
+body: JSON.stringify({
+  // ... all other fields
+  imageUrl,
+  is_featured: isFeatured, // Add this line
+}),
+And lastly, make sure to reset the new state in handleSubmit after a successful submission:
+ts
+// ... inside the alert success block
+setIsFeatured(false); // Add this line
+Please apply these changes to fully integrate the "Featured Product" functionality into the admin panel.
