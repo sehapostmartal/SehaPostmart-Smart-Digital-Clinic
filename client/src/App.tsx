@@ -10,6 +10,7 @@ import Blog from "@/pages/Blog";
 import Article from "@/pages/Article";
 import AIConsultation from "@/pages/AIConsultation";
 import Membership from "@/pages/Membership";
+import AdminPage from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/blog/:id" component={Article} />
       <Route path="/consultation" component={AIConsultation} />
       <Route path="/membership" component={Membership} />
+      <Route path="/admin" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>
   );
