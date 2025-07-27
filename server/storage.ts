@@ -95,6 +95,16 @@ export const storage = {
     }
   },
 
+  async deleteProduct(id: string): Promise<void> {
+    const client = createClient();
+    try {
+      await client.connect();
+      await client.query('DELETE FROM products WHERE id = $1', [id]);
+    } finally {
+      await client.end();
+    }
+  },
+
   // Articles
   async getArticles(): Promise<Article[]> {
     const client = createClient();

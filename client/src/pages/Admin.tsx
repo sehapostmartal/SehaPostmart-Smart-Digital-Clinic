@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // This is the main component for the entire Admin Page
 const AdminPage = () => {
@@ -45,10 +45,11 @@ const AdminPage = () => {
 };
 
 
-// This component is the actual dashboard shown after successful login
+// This is the new, complete AdminDashboard component
 const AdminDashboard = () => {
+  // State for the form
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('المكملات الغذائية'); // Default category
+  const [category, setCategory] = useState('المكملات الغذائية');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [benefits, setBenefits] = useState('');
@@ -57,48 +58,56 @@ const AdminDashboard = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // State for the product list
+  const [products, setProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('/api/products');
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleDelete = async (productId: string) => {
+    if (window.confirm('هل أنت متأكد من أنك تريد حذف هذا المنتج؟')) {
+      try {
+        await fetch(`/api/products/${productId}`, { method: 'DELETE' });
+        alert('تم حذف المنتج بنجاح.');
+        fetchProducts(); // Refresh the list
+      } catch (error) {
+        console.error('Failed to delete product:', error);
+        alert('فشلت عملية الحذف.');
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
       const response = await fetch('/api/products', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          category,
-          price,
-          description,
-          benefits,
-          usage,
-          ingredients,
-          imageUrl,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, category, price, description, benefits, usage, ingredients, imageUrl }),
       });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
+      if (!response.ok) throw new Error('Network response was not ok');
       const newProduct = await response.json();
       alert(`تمت إضافة المنتج بنجاح! المنتج: ${newProduct.name}`);
-      
-      // Clear the form for the next entry
-      setName('');
-      setCategory('المكملات الغذائية');
-      setPrice('');
-      setDescription('');
-      setBenefits('');
-      setUsage('');
-      setIngredients('');
-      setImageUrl('');
-
+      setName(''); setCategory('المكملات الغذائية'); setPrice(''); setDescription(''); setBenefits(''); setUsage(''); setIngredients(''); setImageUrl('');
+      fetchProducts(); // Refresh the list
     } catch (error) {
       console.error('Failed to add product:', error);
-      alert('فشلت عملية إضافة المنتج. يرجى المحاولة مرة أخرى.');
+      alert('فشلت عملية إضافة المنتج.');
     } finally {
       setIsSubmitting(false);
     }
@@ -107,60 +116,45 @@ const AdminDashboard = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-green-800 mb-6">لوحة التحكم</h1>
-      
-      <div className="bg-white p-8 rounded-lg shadow-md">
+
+      {/* Add Product Form */}
+      <div className="bg-white p-8 rounded-lg shadow-md mb-8">
         <h2 className="text-2xl font-semibold mb-6">إضافة منتج جديد</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">اسم المنتج</label>
-            <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500" required />
-          </div>
-
-          <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700">التصنيف</label>
-            <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
-              <option>المكملات الغذائية</option>
-              <option>المشروبات الصحية</option>
-              <option>العناية الشخصية</option>
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="price" className="block text-sm font-medium text-gray-700">السعر</label>
-            <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500" required />
-          </div>
-
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">الوصف</label>
-            <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"></textarea>
-          </div>
-
-          <div>
-            <label htmlFor="benefits" className="block text-sm font-medium text-gray-700">الفوائد</label>
-            <textarea id="benefits" value={benefits} onChange={(e) => setBenefits(e.target.value)} rows={3} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"></textarea>
-          </div>
-
-          <div>
-            <label htmlFor="usage" className="block text-sm font-medium text-gray-700">طريقة الاستخدام</label>
-            <textarea id="usage" value={usage} onChange={(e) => setUsage(e.target.value)} rows={3} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"></textarea>
-          </div>
-
-          <div>
-            <label htmlFor="ingredients" className="block text-sm font-medium text-gray-700">المكونات</label>
-            <textarea id="ingredients" value={ingredients} onChange={(e) => setIngredients(e.target.value)} rows={3} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"></textarea>
-          </div>
-
-          <div>
-            <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">رابط الصورة</label>
-            <input type="text" id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500" />
-          </div>
-
-          <div>
-            <button type="submit" disabled={isSubmitting} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400">
-              {isSubmitting ? 'جاري الإضافة...' : 'إضافة المنتج'}
-            </button>
-          </div>
+          <div><label className="block text-sm font-medium text-gray-700">اسم المنتج</label><input type="text" value={name} onChange={(e) => setName(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md p-2" required /></div>
+          <div><label className="block text-sm font-medium text-gray-700">التصنيف</label><select value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md p-2"><option>المكملات الغذائية</option><option>المشروبات الصحية</option><option>العناية الشخصية</option></select></div>
+          <div><label className="block text-sm font-medium text-gray-700">السعر</label><input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md p-2" required /></div>
+          <div><label className="block text-sm font-medium text-gray-700">الوصف</label><textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
+          <div><label className="block text-sm font-medium text-gray-700">الفوائد</label><textarea value={benefits} onChange={(e) => setBenefits(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
+          <div><label className="block text-sm font-medium text-gray-700">طريقة الاستخدام</label><textarea value={usage} onChange={(e) => setUsage(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
+          <div><label className="block text-sm font-medium text-gray-700">المكونات</label><textarea value={ingredients} onChange={(e) => setIngredients(e.target.value)} rows={2} className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea></div>
+          <div><label className="block text-sm font-medium text-gray-700">رابط الصورة</label><input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md p-2" /></div>
+          <div><button type="submit" disabled={isSubmitting} className="w-full flex justify-center py-2 px-4 border rounded-md text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-400">{isSubmitting ? 'جاري الإضافة...' : 'إضافة المنتج'}</button></div>
         </form>
+      </div>
+
+      {/* Product List */}
+      <div className="bg-white p-8 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold mb-6">قائمة المنتجات الحالية</h2>
+        {isLoading ? <p>جاري تحميل المنتجات...</p> : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead className="bg-gray-50"><tr><th className="p-2 text-right">الاسم</th><th className="p-2 text-right">التصنيف</th><th className="p-2 text-right">السعر</th><th className="p-2">إجراء</th></tr></thead>
+              <tbody>
+                {products.map(product => (
+                  <tr key={product.id} className="border-b">
+                    <td className="p-2">{product.name}</td>
+                    <td className="p-2">{product.category}</td>
+                    <td className="p-2">${product.price}</td>
+                    <td className="p-2 text-center">
+                      <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600 hover:bg-red-50">حذف</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
