@@ -13,6 +13,9 @@ import {
 } from "@shared/schema";
 
 // PostgreSQL client setup
+import { Client } from 'pg';
+import type { Product, Article, Consultation, Membership, InsertProduct, InsertArticle, InsertConsultation, InsertMembership } from "@shared/schema";
+
 function createClient() {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
