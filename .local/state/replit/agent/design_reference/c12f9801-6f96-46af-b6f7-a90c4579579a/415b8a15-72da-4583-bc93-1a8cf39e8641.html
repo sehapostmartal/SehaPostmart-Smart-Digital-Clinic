@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sehapostmart - العيادة الرقمية الذكية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: {
+                        50: '#E8F5E8',
+                        100: '#C8E6C8',
+                        200: '#A5D6A7',
+                        300: '#81C784',
+                        400: '#66BB6A',
+                        500: '#4CAF50',
+                        600: '#43A047',
+                        700: '#2E7D32',
+                        800: '#1B5E20',
+                        900: '#0D4E15'
+                    },
+                    secondary: {
+                        50: '#FAFAFA',
+                        100: '#F5F5F5',
+                        200: '#EEEEEE',
+                        300: '#E0E0E0',
+                        400: '#BDBDBD',
+                        500: '#9E9E9E',
+                        600: '#757575',
+                        700: '#424242',
+                        800: '#212121',
+                        900: '#000000'
+                    }
+                },
+                fontFamily: {
+                    'tajawal': ['Tajawal', 'sans-serif'],
+                    'inter': ['Inter', 'sans-serif']
+                }
+            }
+        }
+    };
+    </script>
+</head>
+<body class="bg-gray-50 font-tajawal">
+    <!-- @COMPONENT: Header [navigation, logo, contact info] -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-reverse space-x-2">
+                    <div class="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-clinic-medical text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-primary-700">sehapostmart</h1>
+                        <p class="text-xs text-secondary-500 font-inter">Smart Digital Clinic</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-reverse space-x-8">
+                    <a href="#" class="text-secondary-700 hover:text-primary-600 transition-colors font-medium" data-bind="navigation.home">الرئيسية</a>
+                    <a href="#" class="text-secondary-700 hover:text-primary-600 transition-colors font-medium" data-bind="navigation.products">المنتجات</a>
+                    <a href="#" class="text-secondary-700 hover:text-primary-600 transition-colors font-medium" data-bind="navigation.blog">المدونة</a>
+                    <a href="#" class="text-secondary-700 hover:text-primary-600 transition-colors font-medium" data-bind="navigation.consultation">الاستشارة الذكية</a>
+                    <a href="#" class="text-secondary-700 hover:text-primary-600 transition-colors font-medium" data-bind="navigation.membership">العضوية</a>
+                </nav>
+
+                <!-- Contact Info & Mobile Menu -->
+                <div class="flex items-center space-x-reverse space-x-4">
+                    <a href="https://wa.me/963951902860" class="hidden sm:flex items-center space-x-reverse space-x-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                        <i class="fab fa-whatsapp"></i>
+                        <span class="font-inter text-sm">WhatsApp</span>
+                    </a>
+                    <button class="md:hidden p-2 text-secondary-600 hover:text-primary-600 transition-colors" data-event="click:toggleMobileMenu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="md:hidden bg-white border-t border-secondary-200 py-4 px-4 space-y-2" data-mock="true" style="display: none;" data-implementation="Toggle with mobile menu button">
+            <a href="#" class="block py-2 text-secondary-700 hover:text-primary-600 transition-colors">الرئيسية</a>
+            <a href="#" class="block py-2 text-secondary-700 hover:text-primary-600 transition-colors">المنتجات</a>
+            <a href="#" class="block py-2 text-secondary-700 hover:text-primary-600 transition-colors">المدونة</a>
+            <a href="#" class="block py-2 text-secondary-700 hover:text-primary-600 transition-colors">الاستشارة الذكية</a>
+            <a href="#" class="block py-2 text-secondary-700 hover:text-primary-600 transition-colors">العضوية</a>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <!-- @COMPONENT: HeroSection [main banner, CTA] -->
+    <section class="bg-gradient-to-br from-primary-500 to-primary-700 text-white py-20">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 lg:pl-8 text-center lg:text-right">
+                    <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
+                        العيادة الرقمية الذكية
+                    </h1>
+                    <p class="text-xl lg:text-2xl mb-8 text-primary-100 leading-relaxed">
+                        منصة صحية شاملة تقدم المنتجات الطبيعية والاستشارات الذكية لحياة صحية أفضل
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <button class="bg-white text-primary-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-primary-50 transition-colors shadow-lg" data-event="click:scrollToServices">
+                            استكشف خدماتنا
+                        </button>
+                        <a href="https://wa.me/963951902860" class="border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-primary-700 transition-colors">
+                            <i class="fab fa-whatsapp ml-2"></i>
+                            تواصل معنا
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 mt-12 lg:mt-0">
+                    <!-- Modern healthcare illustration representing digital health platform -->
+                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Digital healthcare technology" class="rounded-2xl shadow-2xl w-full max-w-lg mx-auto" />
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: HeroSection -->
+
+    <!-- @COMPONENT: ServicesSection [four main services] -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-secondary-800 mb-4">خدماتنا الأساسية</h2>
+                <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+                    نقدم مجموعة شاملة من الخدمات الصحية المتطورة لضمان رفاهيتك وصحتك
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Natural Products Service -->
+                <div class="bg-gradient-to-br from-primary-50 to-primary-100 p-8 rounded-xl hover:shadow-lg transition-all duration-300 group cursor-pointer" data-event="click:navigateToProducts">
+                    <div class="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-leaf text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary-800 mb-4">المنتجات الطبيعية</h3>
+                    <p class="text-secondary-600 mb-6 leading-relaxed">
+                        مكملات غذائية ومنتجات طبيعية عالية الجودة لدعم صحتك بشكل طبيعي وآمن
+                    </p>
+                    <button class="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                        استكشف المنتجات <i class="fas fa-arrow-left mr-2"></i>
+                    </button>
+                </div>
+
+                <!-- Knowledge Content Service -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl hover:shadow-lg transition-all duration-300 group cursor-pointer" data-event="click:navigateToBlog">
+                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-book-medical text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary-800 mb-4">المحتوى المعرفي</h3>
+                    <p class="text-secondary-600 mb-6 leading-relaxed">
+                        مقالات وموارد تعليمية موثوقة من خبراء الصحة لتوسيع معرفتك الطبية
+                    </p>
+                    <button class="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
+                        اقرأ المقالات <i class="fas fa-arrow-left mr-2"></i>
+                    </button>
+                </div>
+
+                <!-- AI Consultations Service -->
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-xl hover:shadow-lg transition-all duration-300 group cursor-pointer" data-event="click:navigateToConsultation">
+                    <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-robot text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary-800 mb-4">الاستشارات الذكية</h3>
+                    <p class="text-secondary-600 mb-6 leading-relaxed">
+                        استشارات صحية ذكية مدعومة بالذكاء الاصطناعي للحصول على توجيهات مخصصة
+                    </p>
+                    <button class="text-purple-600 font-semibold hover:text-purple-700 transition-colors">
+                        احصل على استشارة <i class="fas fa-arrow-left mr-2"></i>
+                    </button>
+                </div>
+
+                <!-- Membership Service -->
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-xl hover:shadow-lg transition-all duration-300 group cursor-pointer" data-event="click:navigateToMembership">
+                    <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-crown text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary-800 mb-4">فرصة العضوية</h3>
+                    <p class="text-secondary-600 mb-6 leading-relaxed">
+                        انضم إلى برنامج العضوية المميز واحصل على خصومات وخدمات حصرية
+                    </p>
+                    <button class="text-orange-600 font-semibold hover:text-orange-700 transition-colors">
+                        انضم الآن <i class="fas fa-arrow-left mr-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: ServicesSection -->
+
+    <!-- @COMPONENT: FeaturedProductsSection [product showcase] -->
+    <section class="py-20 bg-secondary-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-secondary-800 mb-4">المنتجات المميزة</h2>
+                <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+                    اكتشف مجموعتنا المختارة من أفضل المنتجات الطبيعية لصحة أفضل
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- @MAP: featuredProducts.map(product => ( -->
+                
+                <!-- Product 1: Reishi Mushroom -->
+                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group" data-mock="true">
+                    <div class="relative overflow-hidden">
+                        <!-- Reishi mushroom supplements in elegant packaging -->
+                        <img src="https://images.unsplash.com/photo-1584308972272-9e4e7685e80f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" alt="Reishi Mushroom Supplement" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div class="absolute top-4 right-4 bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            مكملات غذائية
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-secondary-800 mb-2" data-bind="product.name">فطر الريشي</h3>
+                        <p class="text-secondary-600 mb-4 line-clamp-2" data-bind="product.description">
+                            مكمل طبيعي قوي لتعزيز المناعة وتحسين جودة النوم والحد من التوتر
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-primary-600 font-bold text-lg" data-bind="product.price">$29.99</span>
+                            <button class="bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" data-event="click:orderViaWhatsApp" data-implementation="Should open WhatsApp with pre-written message">
+                                <i class="fab fa-whatsapp ml-1"></i>
+                                اطلب الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2: Lion's Mane -->
+                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group" data-mock="true">
+                    <div class="relative overflow-hidden">
+                        <!-- Lion's mane mushroom supplement capsules -->
+                        <img src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" alt="Lion's Mane Supplement" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div class="absolute top-4 right-4 bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            مكملات غذائية
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-secondary-800 mb-2" data-bind="product.name">فطر عرف الأسد</h3>
+                        <p class="text-secondary-600 mb-4 line-clamp-2" data-bind="product.description">
+                            يدعم صحة الدماغ ويحسن التركيز والذاكرة بشكل طبيعي وآمن
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-primary-600 font-bold text-lg" data-bind="product.price">$34.99</span>
+                            <button class="bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" data-event="click:orderViaWhatsApp">
+                                <i class="fab fa-whatsapp ml-1"></i>
+                                اطلب الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3: Spirulina -->
+                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group" data-mock="true">
+                    <div class="relative overflow-hidden">
+                        <!-- Spirulina powder and tablets on a clean background -->
+                        <img src="https://images.unsplash.com/photo-1559181567-c3190ca9959b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" alt="Spirulina Supplement" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div class="absolute top-4 right-4 bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            مكملات غذائية
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-secondary-800 mb-2" data-bind="product.name">سبيرولينا</h3>
+                        <p class="text-secondary-600 mb-4 line-clamp-2" data-bind="product.description">
+                            طحالب طبيعية غنية بالبروتين والفيتامينات لتعزيز الطاقة والصحة العامة
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-primary-600 font-bold text-lg" data-bind="product.price">$24.99</span>
+                            <button class="bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" data-event="click:orderViaWhatsApp">
+                                <i class="fab fa-whatsapp ml-1"></i>
+                                اطلب الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4: Lingzhi Coffee -->
+                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group" data-mock="true">
+                    <div class="relative overflow-hidden">
+                        <!-- Premium coffee with medicinal mushrooms blend -->
+                        <img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" alt="Lingzhi Coffee" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div class="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            مشروبات صحية
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-secondary-800 mb-2" data-bind="product.name">قهوة لينغتشي</h3>
+                        <p class="text-secondary-600 mb-4 line-clamp-2" data-bind="product.description">
+                            قهوة مميزة معززة بفطر الريشي لطاقة مستدامة وفوائد صحية إضافية
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-primary-600 font-bold text-lg" data-bind="product.price">$39.99</span>
+                            <button class="bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" data-event="click:orderViaWhatsApp">
+                                <i class="fab fa-whatsapp ml-1"></i>
+                                اطلب الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 5: Natural Skin Care -->
+                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group" data-mock="true">
+                    <div class="relative overflow-hidden">
+                        <!-- Natural skincare cream with botanical ingredients -->
+                        <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" alt="Natural Skin Care Cream" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div class="absolute top-4 right-4 bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            العناية الشخصية
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-secondary-800 mb-2" data-bind="product.name">كريم العناية الطبيعي</h3>
+                        <p class="text-secondary-600 mb-4 line-clamp-2" data-bind="product.description">
+                            كريم طبيعي مغذي للبشرة مصنوع من مكونات عضوية لترطيب وحماية البشرة
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-primary-600 font-bold text-lg" data-bind="product.price">$19.99</span>
+                            <button class="bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" data-event="click:orderViaWhatsApp">
+                                <i class="fab fa-whatsapp ml-1"></i>
+                                اطلب الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 6: Natural Shampoo -->
+                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group" data-mock="true">
+                    <div class="relative overflow-hidden">
+                        <!-- Natural organic shampoo bottles with herbal ingredients -->
+                        <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=400" alt="Natural Shampoo" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div class="absolute top-4 right-4 bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            العناية الشخصية
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-secondary-800 mb-2" data-bind="product.name">شامبو طبيعي</h3>
+                        <p class="text-secondary-600 mb-4 line-clamp-2" data-bind="product.description">
+                            شامبو طبيعي خالي من المواد الكيميائية الضارة لتنظيف وتغذية الشعر بلطف
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-primary-600 font-bold text-lg" data-bind="product.price">$16.99</span>
+                            <button class="bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" data-event="click:orderViaWhatsApp">
+                                <i class="fab fa-whatsapp ml-1"></i>
+                                اطلب الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- @END_MAP )) -->
+            </div>
+
+            <div class="text-center mt-12">
+                <button class="bg-primary-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-primary-600 transition-colors shadow-lg" data-event="click:viewAllProducts">
+                    عرض جميع المنتجات
+                    <i class="fas fa-arrow-left mr-2"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: FeaturedProductsSection -->
+
+    <!-- @COMPONENT: BlogSection [latest articles] -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-secondary-800 mb-4">أحدث المقالات الصحية</h2>
+                <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+                    اطلع على آخر المعلومات والنصائح الصحية من خبرائنا المتخصصين
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- @MAP: latestArticles.map(article => ( -->
+                
+                <!-- Article 1: Reishi Benefits -->
+                <article class="bg-secondary-50 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group" data-mock="true">
+                    <div class="relative overflow-hidden">
+                        <!-- Reishi mushrooms growing in natural forest environment -->
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=300" alt="Reishi mushrooms in natural environment" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div class="absolute top-4 right-4 bg-primary-500 text-white px-3 py-1 rounded-full text-sm">
+                            المناعة
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-secondary-500 mb-3">
+                            <i class="fas fa-calendar-alt ml-2"></i>
+                            <span data-bind="article.date">15 ديسمبر 2024</span>
+                            <span class="mx-2">•</span>
+                            <span data-bind="article.readTime">5 دقائق قراءة</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-secondary-800 mb-3 group-hover:text-primary-600 transition-colors" data-bind="article.title">
+                            فوائد فطر الريشي لتقوية المناعة
+                        </h3>
+                        <p class="text-secondary-600 mb-4 line-clamp-3" data-bind="article.excerpt">
+                            اكتشف كيف يمكن لفطر الريشي المعروف بـ "فطر الخلود" أن يعزز نظام المناعة الطبيعي في الجسم ويحسن الصحة العامة من خلال خصائصه المضادة للأكسدة والالتهابات.
+                        </p>
+                        <button class="text-primary-600 font-semibold hover:text-primary-700 transition-colors" data-event="click:readFullArticle">
+                            اقرأ المزيد <i class="fas fa-arrow-left mr-2"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Article 2: Natural Focus -->
+                <article class="bg-secondary-50 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group" data-mock="true">
+                    <div class="relative overflow-hidden">
+                        <!-- Person meditating in peaceful natural setting for focus -->
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=300" alt="Person meditating for improved focus" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div class="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
+                            التركيز
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-secondary-500 mb-3">
+                            <i class="fas fa-calendar-alt ml-2"></i>
+                            <span data-bind="article.date">12 ديسمبر 2024</span>
+                            <span class="mx-2">•</span>
+                            <span data-bind="article.readTime">7 دقائق قراءة</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-secondary-800 mb-3 group-hover:text-primary-600 transition-colors" data-bind="article.title">
+                            كيفية تحسين التركيز بطرق طبيعية
+                        </h3>
+                        <p class="text-secondary-600 mb-4 line-clamp-3" data-bind="article.excerpt">
+                            تعلم الطرق الطبيعية والآمنة لتعزيز التركيز والوضوح الذهني، بما في ذلك التغذية المناسبة والمكملات الطبيعية وتقنيات التأمل والتنفس.
+                        </p>
+                        <button class="text-primary-600 font-semibold hover:text-primary-700 transition-colors" data-event="click:readFullArticle">
+                            اقرأ المزيد <i class="fas fa-arrow-left mr-2"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Article 3: Antioxidants -->
+                <article class="bg-secondary-50 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group" data-mock="true">
+                    <div class="relative overflow-hidden">
+                        <!-- Colorful array of antioxidant-rich fruits and vegetables -->
+                        <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=300" alt="Colorful antioxidant-rich foods" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div class="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm">
+                            التغذية
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-secondary-500 mb-3">
+                            <i class="fas fa-calendar-alt ml-2"></i>
+                            <span data-bind="article.date">10 ديسمبر 2024</span>
+                            <span class="mx-2">•</span>
+                            <span data-bind="article.readTime">6 دقائق قراءة</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-secondary-800 mb-3 group-hover:text-primary-600 transition-colors" data-bind="article.title">
+                            أهمية مضادات الأكسدة في النظام الغذائي
+                        </h3>
+                        <p class="text-secondary-600 mb-4 line-clamp-3" data-bind="article.excerpt">
+                            فهم دور مضادات الأكسدة الحيوي في حماية الجسم من الجذور الحرة والأمراض المزمنة، وأفضل المصادر الطبيعية للحصول عليها يوميًا.
+                        </p>
+                        <button class="text-primary-600 font-semibold hover:text-primary-700 transition-colors" data-event="click:readFullArticle">
+                            اقرأ المزيد <i class="fas fa-arrow-left mr-2"></i>
+                        </button>
+                    </div>
+                </article>
+                
+                <!-- @END_MAP )) -->
+            </div>
+
+            <div class="text-center mt-12">
+                <button class="bg-primary-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-primary-600 transition-colors shadow-lg" data-event="click:viewAllArticles">
+                    عرض جميع المقالات
+                    <i class="fas fa-arrow-left mr-2"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: BlogSection -->
+
+    <!-- @COMPONENT: MembershipCTA [membership call-to-action] -->
+    <section class="py-20 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-8">
+                    <i class="fas fa-crown text-4xl text-yellow-300"></i>
+                </div>
+                <h2 class="text-3xl lg:text-4xl font-bold mb-6">
+                    انضم إلى عضويتنا المميزة
+                </h2>
+                <p class="text-xl lg:text-2xl mb-8 text-primary-100 leading-relaxed max-w-3xl mx-auto">
+                    احصل على خصومات حصرية، استشارات مجانية، ومحتوى صحي متقدم مع عضويتنا الذهبية
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-percentage text-2xl text-yellow-300"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">خصومات حصرية</h3>
+                        <p class="text-primary-100">خصم يصل إلى 30% على جميع المنتجات</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-md text-2xl text-yellow-300"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">استشارات مجانية</h3>
+                        <p class="text-primary-100">3 استشارات ذكية مجانية شهريًا</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-star text-2xl text-yellow-300"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">محتوى متقدم</h3>
+                        <p class="text-primary-100">وصول حصري للمقالات والدورات المتقدمة</p>
+                    </div>
+                </div>
+
+                <div class="bg-white bg-opacity-10 rounded-2xl p-8 mb-8">
+                    <div class="text-center">
+                        <p class="text-lg mb-2">معرف العضوية:</p>
+                        <p class="text-3xl font-bold text-yellow-300" data-bind="membershipId">819026838</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="bg-white text-primary-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-primary-50 transition-colors shadow-lg" data-event="click:joinMembership">
+                        <i class="fas fa-crown ml-2"></i>
+                        اشترك الآن
+                    </button>
+                    <button class="border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-primary-700 transition-colors" data-event="click:learnMoreMembership">
+                        تعرف على المزيد
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: MembershipCTA -->
+
+    <!-- @COMPONENT: Footer [contact info, links, copyright] -->
+    <footer class="bg-secondary-800 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <!-- Brand Info -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center space-x-reverse space-x-3 mb-6">
+                        <div class="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-clinic-medical text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold">sehapostmart</h3>
+                            <p class="text-secondary-300 font-inter">Smart Digital Clinic</p>
+                        </div>
+                    </div>
+                    <p class="text-secondary-300 leading-relaxed mb-6 max-w-md">
+                        منصة صحية شاملة تقدم أفضل المنتجات الطبيعية والاستشارات الذكية لحياة صحية أفضل. نحن ملتزمون بتقديم حلول صحية موثوقة ومبتكرة.
+                    </p>
+                    <div class="flex space-x-reverse space-x-4">
+                        <a href="#" class="w-10 h-10 bg-secondary-700 rounded-full flex items-center justify-center hover:bg-primary-500 transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-secondary-700 rounded-full flex items-center justify-center hover:bg-primary-500 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-secondary-700 rounded-full flex items-center justify-center hover:bg-primary-500 transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-secondary-700 rounded-full flex items-center justify-center hover:bg-primary-500 transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">روابط سريعة</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-secondary-300 hover:text-primary-400 transition-colors">المنتجات</a></li>
+                        <li><a href="#" class="text-secondary-300 hover:text-primary-400 transition-colors">المدونة</a></li>
+                        <li><a href="#" class="text-secondary-300 hover:text-primary-400 transition-colors">الاستشارة الذكية</a></li>
+                        <li><a href="#" class="text-secondary-300 hover:text-primary-400 transition-colors">العضوية</a></li>
+                        <li><a href="#" class="text-secondary-300 hover:text-primary-400 transition-colors">من نحن</a></li>
+                        <li><a href="#" class="text-secondary-300 hover:text-primary-400 transition-colors">سياسة الخصوصية</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">تواصل معنا</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-reverse space-x-3">
+                            <div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fab fa-whatsapp text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-secondary-300 text-sm">واتساب</p>
+                                <a href="https://wa.me/963951902860" class="text-white hover:text-primary-400 transition-colors font-inter" data-bind="contact.whatsapp">+963951902860</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-reverse space-x-3">
+                            <div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-envelope text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-secondary-300 text-sm">البريد الإلكتروني</p>
+                                <a href="mailto:sehapostmartall@gmail.com" class="text-white hover:text-primary-400 transition-colors font-inter text-sm" data-bind="contact.email">sehapostmartall@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-reverse space-x-3">
+                            <div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-id-card text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-secondary-300 text-sm">معرف العضوية</p>
+                                <p class="text-white font-inter" data-bind="contact.membershipId">819026838</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="border-t border-secondary-700 pt-8 text-center">
+                <p class="text-secondary-400 font-inter">
+                    © 2024 sehapostmart - Smart Digital Clinic. جميع الحقوق محفوظة.
+                </p>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <script>
+        // Simple mobile menu toggle
+        (function() {
+            const mobileMenuButton = document.querySelector('[data-event="click:toggleMobileMenu"]');
+            const mobileMenu = document.querySelector('.md\\:hidden .border-t');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenu.style.display === 'none' || !mobileMenu.style.display) {
+                        mobileMenu.style.display = 'block';
+                    } else {
+                        mobileMenu.style.display = 'none';
+                    }
+                });
+            }
+
+            // Smooth scroll for hero CTA
+            const scrollButton = document.querySelector('[data-event="click:scrollToServices"]');
+            if (scrollButton) {
+                scrollButton.addEventListener('click', function() {
+                    const servicesSection = document.querySelector('.py-20.bg-white');
+                    if (servicesSection) {
+                        servicesSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
+
+            // WhatsApp order functionality placeholder
+            const whatsappButtons = document.querySelectorAll('[data-event="click:orderViaWhatsApp"]');
+            whatsappButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // TODO: Implement WhatsApp integration with product details
+                    const productName = this.closest('.bg-white').querySelector('h3').textContent;
+                    const message = `مرحبا، أود طلب منتج: ${productName}`;
+                    const whatsappUrl = `https://wa.me/963951902860?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                });
+            });
+
+            // Navigation event handlers
+            const navButtons = document.querySelectorAll('[data-event^="click:navigate"]');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // TODO: Implement navigation with React Router
+                    const action = this.getAttribute('data-event');
+                    console.log(`Navigation action: ${action}`);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

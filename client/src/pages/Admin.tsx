@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Product, Article } from "../../../shared/types"; // Adjust path if necessary
+import { Product, Article } from "../../../shared/schema";
+import { supabaseService } from "../services/supabase";
 
 // This is the main component for the entire Admin Page
 const AdminPage = () => {
@@ -94,9 +95,8 @@ const ProductManager = () => {
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/products");
-      const data = await response.json();
-      setProducts(data);
+      const data = await supabaseService.getProducts();
+      setProducts(data || []);
     } catch (error) {
       console.error("Failed to fetch products:", error);
     } finally {
@@ -108,10 +108,10 @@ const ProductManager = () => {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (productId: number) => {
+  const handleDelete = async (productId: string) => {
     if (window.confirm("هل أنت متأكد من أنك تريد حذف هذا المنتج؟")) {
       try {
-        await fetch(`/api/products/${productId}`, { method: "DELETE" });
+        await supabaseService.deleteProduct(productId);
         alert("تم حذف المنتج بنجاح.");
         fetchProducts();
       } catch (error) {
@@ -125,22 +125,19 @@ const ProductManager = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          category,
-          price,
-          description,
-          benefits,
-          usage,
-          ingredients,
-          imageUrl,
-          is_featured: isFeatured,
-        }),
-      });
-      if (!response.ok) throw new Error("Network response was not ok");
+      const productData = {
+        name,
+        category,
+        price,
+        description,
+        benefits,
+        usage,
+        ingredients,
+        imageUrl,
+        is_featured: isFeatured,
+      };
+      
+      await supabaseService.addProduct(productData);
       alert("تمت إضافة المنتج بنجاح!");
       setName("");
       setCategory("المكملات الغذائية");
@@ -309,9 +306,8 @@ const ArticleManager = () => {
   const fetchArticles = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/articles");
-      const data = await response.json();
-      setArticles(data);
+      const data = await supabaseService.getArticles();
+      setArticles(data || []);
     } catch (error) {
       console.error("Failed to fetch articles:", error);
     } finally {
@@ -323,10 +319,10 @@ const ArticleManager = () => {
     fetchArticles();
   }, []);
 
-  const handleDelete = async (articleId: number) => {
+  const handleDelete = async (articleId: string) => {
     if (window.confirm("هل أنت متأكد من أنك تريد حذف هذا المقال؟")) {
       try {
-        await fetch(`/api/articles/${articleId}`, { method: "DELETE" });
+        await supabaseService.deleteArticle(articleId);
         alert("تم حذف المقال بنجاح.");
         fetchArticles();
       } catch (error) {
@@ -339,15 +335,17 @@ const ArticleManager = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/articles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, category, content, imageUrl }),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to add article");
-      }
+      const articleData = {
+        title,
+        category,
+        content,
+        imageUrl,
+        excerpt: content.substring(0, 150) + "...", // Generate excerpt from content
+        readTime: "5 دقائق", // Default read time
+        featured: "false"
+      };
+      
+      await supabaseService.addArticle(articleData);
       alert("تمت إضافة المقال بنجاح.");
       setTitle("");
       setCategory("صحة عامة");

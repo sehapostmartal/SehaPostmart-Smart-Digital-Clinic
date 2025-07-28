@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getArticles } from "@/services/supabase";
 import type { Article } from "@shared/schema";
 
 export default function Blog() {
@@ -13,14 +14,8 @@ export default function Blog() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const { data: articles, isLoading, error } = useQuery<Article[]>({
-    queryKey: ['/api/articles'],
-    queryFn: async () => {
-      const response = await fetch('/api/articles');
-      if (!response.ok) {
-        throw new Error('Failed to fetch articles');
-      }
-      return response.json();
-    }
+    queryKey: ['articles'],
+    queryFn: getArticles
   });
 
   const categories = [
@@ -90,45 +85,47 @@ export default function Blog() {
         </section>
 
         {/* Featured Article */}
-        <section className="py-12 bg-white">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-secondary-800 mb-8 text-center">المقال المميز</h2>
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-gradient-to-r from-primary-50 to-blue-50 rounded-2xl overflow-hidden shadow-lg">
-                <div className="grid lg:grid-cols-2 gap-8">
-                  <div className="p-8 lg:p-12">
-                    <div className="inline-block bg-primary-500 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                      {featuredArticle.category}
+        {featuredArticle && (
+          <section className="py-12 bg-white">
+            <div className="container mx-auto px-4">
+              <h2 className="text-3xl font-bold text-secondary-800 mb-8 text-center">المقال المميز</h2>
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-gradient-to-r from-primary-50 to-blue-50 rounded-2xl overflow-hidden shadow-lg">
+                  <div className="grid lg:grid-cols-2 gap-8">
+                    <div className="p-8 lg:p-12">
+                      <div className="inline-block bg-primary-500 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                        {featuredArticle.category}
+                      </div>
+                      <h3 className="text-2xl lg:text-3xl font-bold text-secondary-800 mb-4">
+                        {featuredArticle.title}
+                      </h3>
+                      <p className="text-secondary-600 mb-6 leading-relaxed">
+                        {featuredArticle.excerpt}
+                      </p>
+                      <div className="flex items-center text-sm text-secondary-500 mb-6">
+                        <span>{featuredArticle.readTime}</span>
+                      </div>
+                      <a 
+                        href={`/blog/${featuredArticle.id}`}
+                        className="bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition-colors font-semibold inline-flex items-center gap-2"
+                      >
+                        اقرأ المقال كاملاً
+                        <span>←</span>
+                      </a>
                     </div>
-                    <h3 className="text-2xl lg:text-3xl font-bold text-secondary-800 mb-4">
-                      {featuredArticle.title}
-                    </h3>
-                    <p className="text-secondary-600 mb-6 leading-relaxed">
-                      {featuredArticle.excerpt}
-                    </p>
-                    <div className="flex items-center text-sm text-secondary-500 mb-6">
-                      <span>{featuredArticle.readTime}</span>
+                    <div className="lg:p-8">
+                      <img 
+                        src={featuredArticle.image} 
+                        alt={featuredArticle.title}
+                        className="w-full h-64 lg:h-full object-cover rounded-xl"
+                      />
                     </div>
-                    <a 
-                      href={`/blog/${featuredArticle.id}`}
-                      className="bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition-colors font-semibold inline-flex items-center gap-2"
-                    >
-                      اقرأ المقال كاملاً
-                      <span>←</span>
-                    </a>
-                  </div>
-                  <div className="lg:p-8">
-                    <img 
-                      src={featuredArticle.imageUrl} 
-                      alt={featuredArticle.title}
-                      className="w-full h-64 lg:h-full object-cover rounded-xl"
-                    />
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Search and Filter Section */}
         <section className="py-8 bg-secondary-50 border-b">

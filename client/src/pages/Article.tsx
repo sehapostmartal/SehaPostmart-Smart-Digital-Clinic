@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { getArticles, getArticleById } from "@/services/supabase";
 import type { Article } from "@shared/schema";
 
 export default function Article() {
@@ -15,25 +16,14 @@ export default function Article() {
   const articleId = params.id;
   
   const { data: article, isLoading, error } = useQuery<Article>({
-    queryKey: ['/api/articles', articleId],
-    queryFn: async () => {
-      const response = await fetch(`/api/articles/${articleId}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch article');
-      }
-      return response.json();
-    }
+    queryKey: ['article', articleId],
+    queryFn: () => getArticleById(articleId!),
+    enabled: !!articleId
   });
 
   const { data: allArticles } = useQuery<Article[]>({
-    queryKey: ['/api/articles'],
-    queryFn: async () => {
-      const response = await fetch('/api/articles');
-      if (!response.ok) {
-        throw new Error('Failed to fetch articles');
-      }
-      return response.json();
-    }
+    queryKey: ['articles'],
+    queryFn: getArticles
   });
 
   if (isLoading) {

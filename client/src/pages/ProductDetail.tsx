@@ -8,6 +8,7 @@ import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getProduct, getProducts } from "@/services/supabase";
 import type { Product } from "@shared/schema";
 
 export default function ProductDetail() {
@@ -15,25 +16,13 @@ export default function ProductDetail() {
   const productId = params.id;
   
   const { data: product, isLoading, error } = useQuery<Product>({
-    queryKey: ['/api/products', productId],
-    queryFn: async () => {
-      const response = await fetch(`/api/products/${productId}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch product');
-      }
-      return response.json();
-    }
+    queryKey: ['product', productId],
+    queryFn: () => getProduct(productId!)
   });
 
   const { data: allProducts } = useQuery<Product[]>({
-    queryKey: ['/api/products'],
-    queryFn: async () => {
-      const response = await fetch('/api/products');
-      if (!response.ok) {
-        throw new Error('Failed to fetch products');
-      }
-      return response.json();
-    }
+    queryKey: ['products'],
+    queryFn: getProducts
   });
   if (isLoading) {
     return (
@@ -119,7 +108,7 @@ export default function ProductDetail() {
               <div className="space-y-4">
                 <div className="relative overflow-hidden rounded-2xl">
                   <img 
-                    src={product.imageUrl} 
+                    src={product.image} 
                     alt={product.name}
                     className="w-full aspect-square object-cover"
                   />

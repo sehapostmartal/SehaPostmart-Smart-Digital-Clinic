@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getProducts } from "@/services/supabase";
 import type { Product } from "@shared/schema";
 
 export default function Products() {
@@ -13,14 +14,8 @@ export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const { data: products, isLoading, error } = useQuery<Product[]>({
-    queryKey: ['/api/products'],
-    queryFn: async () => {
-      const response = await fetch('/api/products');
-      if (!response.ok) {
-        throw new Error('Failed to fetch products');
-      }
-      return response.json();
-    }
+    queryKey: ['products'],
+    queryFn: getProducts
   });
 
   const categories = [
